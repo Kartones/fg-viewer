@@ -2,7 +2,9 @@
 
 ## Introduction
 
-Javascript-based viewer for my [Finished Games](https://github.com/Kartones/finished-games) project. 
+Javascript-based viewer for my [Finished Games](https://github.com/Kartones/finished-games) project.
+
+![screenshot](doc/screenshot.png)
 
 ## Instructions
 
