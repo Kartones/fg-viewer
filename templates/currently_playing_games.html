@@ -1,0 +1,39 @@
+<section class="nes-container main-container">
+    <div>
+
+        <h2><i class="nes-icon snes-pad is-medium" title="Currently Playing"></i> <span style="vertical-align:text-bottom"> {{js-username}} Currently playing games list</span></h2>
+
+        <table class="nes-table is-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Platform
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{js-currently-playing-games-table}}
+            </tbody>
+        </table>
+
+        <section class="nes-container">
+            <div>
+                <p>
+                    {{js-currently-playing-games-count}}.
+                </p>
+            </div>
+        </section>
+
+        <section class="nes-container">
+            <div>
+                <p>
+                    {{js-back-from}}
+                </p>
+            </div>
+        </section>
+
+</div>
+</section>

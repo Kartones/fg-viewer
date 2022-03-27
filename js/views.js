@@ -1,0 +1,328 @@
+"use strict";
+
+import {
+  fillPlatformName,
+  fillGameName,
+  fillGamePublishDate,
+  fillGameDLCBlock,
+  fillGameURLs,
+  fillAbandonedGamesCountLiteral,
+  fillCurrentlyPlayingGamesCountLiteral,
+  fillFinishedGamesCountLiteral,
+  fillGamesByPlatformCountLiteral,
+  fillPendingGamesCountLiteral,
+  fillWishlistedGamesCountLiteral,
+  fillBackButton,
+  fillCapitalizedUserName,
+  fillProgressBar,
+  getGameStatusRow,
+  pluralize,
+  linkToGameDetails,
+  linkToUserGamesByPlatform,
+} from "./components.js";
+
+export function fillUserPlatformsTemplate() {
+  let content = appData.templates["user-platforms"];
+
+  const platformsFragment = appData.user.platforms.items
+    .map(
+      (platformId) => `
+      <tr>
+        <td>
+          ${linkToUserGamesByPlatform(platformId, true, "user-platforms")}
+        </td>
+      </tr>
+      `
+    )
+    .join("");
+
+  content = fillCapitalizedUserName(content);
+  content = fillBackButton(content);
+
+  return content.replace("{{js-user-platforms-table}}", platformsFragment);
+}
+
+export function fillUserGamesTemplate() {
+  let content = appData.templates["user-games"];
+
+  content = fillCapitalizedUserName(content);
+  content = fillBackButton(content);
+
+  const gamesFragment = appData.user.games.items
+    .map(
+      (userGame) => `
+      <tr>
+        <td>
+          ${linkToGameDetails(userGame.game_id, "user-games")}
+        </td>
+        <td class="is-centered">
+          ${linkToUserGamesByPlatform(
+            userGame.platform_id,
+            false,
+            "user-games"
+          )}
+        </td>
+        <td class="is-centered">
+          ${getGameStatusRow(userGame)}
+        </td>
+      </tr>
+      `
+    )
+    .join("");
+
+  return content.replace("{{js-user-games-table}}", gamesFragment);
+}
+
+export function fillUserGamesByPlatformTemplate(
+  platformId,
+  from,
+  fromId = null
+) {
+  platformId = parseInt(platformId);
+  let content = appData.templates["user-games-by-platform"];
+
+  const userGamesByPlatform = appData.user.games.byPlatform(platformId);
+
+  const gamesByPlatformFragment = userGamesByPlatform
+    .map(
+      (userGame) => `
+      <tr>
+          <td>
+            ${linkToGameDetails(
+              userGame.game_id,
+              "user-games-by-platform",
+              platformId
+            )}
+          </td>
+          <td class="is-centered">
+            ${getGameStatusRow(userGame)}
+          </td>
+      </tr>`
+    )
+    .join("");
+
+  content = fillCapitalizedUserName(content);
+  content = fillPlatformName(content, platformId);
+  content = fillGamesByPlatformCountLiteral(content, platformId);
+  content = fillAbandonedGamesCountLiteral(content, platformId);
+  content = fillCurrentlyPlayingGamesCountLiteral(content, platformId);
+  content = fillFinishedGamesCountLiteral(content, platformId);
+  content = fillPendingGamesCountLiteral(content, platformId);
+  content = fillProgressBar(
+    content,
+    appData.user.games.completedPlatformCatalogPercent(platformId),
+    appData.user.games.pendingByPlatform(platformId).length,
+    appData.user.games.byPlatform(platformId).length
+  );
+  content = fillBackButton(content, from, fromId);
+
+  return content
+    .replace("{{js-user-games-by-platform-table}}", gamesByPlatformFragment)
+    .replaceAll(
+      "{{js-games-completed-percent}}",
+      `${appData.user.games.completedPlatformCatalogPercent(platformId)}%`
+    );
+}
+
+export function fillGameDetailsTemplate(gameId, from, fromId = null) {
+  let content = appData.templates["game-details"];
+  const game = appData.games[gameId];
+
+  const platformsFragment = game.platforms
+    .map(
+      (platformId) => `
+      <tr>
+          <td>
+            ${linkToUserGamesByPlatform(
+              platformId,
+              true,
+              "game-details",
+              gameId
+            )}
+          </td>
+      </tr>`
+    )
+    .join("");
+
+  content = fillGameName(content, gameId);
+  content = fillGameDLCBlock(content, gameId, "game-details");
+  content = fillBackButton(content, from, fromId);
+  content = fillGamePublishDate(content, gameId);
+  content = fillGameURLs(content, gameId);
+
+  return content.replace("{{js-game-platforms-table}}", platformsFragment);
+}
+
+export function fillAbandonedGamesTemplate() {
+  let content = appData.templates["abandoned-games"];
+
+  let sourceId = "abandoned-games";
+
+  const gamesFragment = appData.user.games
+    .abandoned()
+    .map(
+      (userGame) => `
+      <tr>
+          <td>
+            ${linkToGameDetails(userGame.game_id, sourceId)}
+          </td>
+          <td class="is-centered">
+            ${linkToUserGamesByPlatform(userGame.platform_id, false, sourceId)}
+          </td>
+      </tr>`
+    )
+    .join("");
+
+  content = fillCapitalizedUserName(content);
+  content = fillAbandonedGamesCountLiteral(content);
+  content = fillBackButton(content);
+
+  return content.replace("{{js-abandoned-games-table}}", gamesFragment);
+}
+
+export function fillCurrentlyPlayingGamesTemplate() {
+  let content = appData.templates["currently-playing-games"];
+
+  let sourceId = "currently-playing-games";
+
+  const gamesFragment = appData.user.games
+    .currentlyPlaying()
+    .map(
+      (userGame) => `
+      <tr>
+          <td>
+            ${linkToGameDetails(userGame.game_id, sourceId)}
+          </td>
+          <td class="is-centered">
+            ${linkToUserGamesByPlatform(userGame.platform_id, false, sourceId)}
+          </td>
+      </tr>`
+    )
+    .join("");
+
+  content = fillCapitalizedUserName(content);
+  content = fillCurrentlyPlayingGamesCountLiteral(content);
+  content = fillBackButton(content);
+
+  return content.replace("{{js-currently-playing-games-table}}", gamesFragment);
+}
+
+export function fillPendingGamesTemplate() {
+  let content = appData.templates["pending-games"];
+
+  let sourceId = "pending-games";
+
+  const gamesFragment = appData.user.games
+    .pending()
+    .map(
+      (userGame) => `
+      <tr>
+          <td>
+            ${linkToGameDetails(userGame.game_id, sourceId)}
+          </td>
+          <td class="is-centered">
+            ${linkToUserGamesByPlatform(userGame.platform_id, false, sourceId)}
+          </td>
+      </tr>`
+    )
+    .join("");
+
+  content = fillCapitalizedUserName(content);
+  content = fillPendingGamesCountLiteral(content);
+  content = fillBackButton(content);
+
+  return content.replace("{{js-pending-games-table}}", gamesFragment);
+}
+
+export function fillFinishedGamesTemplate() {
+  let content = appData.templates["finished-games"];
+
+  let sourceId = "finished-games";
+
+  const gamesFragment = appData.user.games
+    .finished()
+    .map(
+      (userGame) => `
+      <tr>
+          <td>
+            ${linkToGameDetails(userGame.game_id, sourceId)}
+          </td>
+          <td class="is-centered">
+            ${linkToUserGamesByPlatform(userGame.platform_id, false, sourceId)}
+          </td>
+          <td class="is-centered">
+            ${userGame.year_finished}
+          </td>
+      </tr>`
+    )
+    .join("");
+
+  content = fillCapitalizedUserName(content);
+  content = fillFinishedGamesCountLiteral(content);
+  content = fillBackButton(content);
+
+  return content.replace("{{js-finished-games-table}}", gamesFragment);
+}
+
+export function fillWishlistedGamesTemplate() {
+  let content = appData.templates["wishlisted-games"];
+
+  let sourceId = "wishlisted-games";
+
+  const gamesFragment = appData.user.wishlistedGames.items
+    .map(
+      (userGame) => `
+      <tr>
+          <td>
+            ${linkToGameDetails(userGame.game_id, sourceId)}
+          </td>
+          <td class="is-centered">
+            ${linkToUserGamesByPlatform(userGame.platform_id, false, sourceId)}
+          </td>
+      </tr>`
+    )
+    .join("");
+
+  content = fillCapitalizedUserName(content);
+  content = fillWishlistedGamesCountLiteral(content);
+  content = fillBackButton(content);
+
+  return content.replace("{{js-wishlisted-games-table}}", gamesFragment);
+}
+
+export function fillCatalogTemplate() {
+  let content = appData.templates["catalog"]
+    .replaceAll(
+      "{{js-games-count}}",
+      `<strong>${appData.user.games.count}</strong> ${pluralize(
+        "game",
+        appData.user.games
+      )}`
+    )
+    .replaceAll(
+      "{{js-platforms-count}}",
+      `<strong>${appData.user.platforms.count}</strong> ${pluralize(
+        "platform",
+        appData.user.platforms
+      )}`
+    )
+    .replaceAll(
+      "{{js-games-completed-percent}}",
+      `${appData.user.games.completedCatalogPercent()}%`
+    );
+
+  content = fillCapitalizedUserName(content);
+  content = fillCurrentlyPlayingGamesCountLiteral(content);
+  content = fillPendingGamesCountLiteral(content);
+  content = fillFinishedGamesCountLiteral(content);
+  content = fillAbandonedGamesCountLiteral(content);
+  content = fillWishlistedGamesCountLiteral(content);
+  content = fillProgressBar(
+    content,
+    appData.user.games.completedCatalogPercent(),
+    appData.user.games.pending().length,
+    appData.user.games.count
+  );
+
+  return content;
+}

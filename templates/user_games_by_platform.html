@@ -1,0 +1,53 @@
+<section class="nes-container main-container">
+  <div>
+
+    <h2>{{js-username}} {{js-platform-name}} games</h2>
+
+    <table class="nes-table is-bordered">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    <i class="nes-icon snes-pad" title="Currently playing"></i>
+                    <i class="nes-icon trophy" title="Finished"></i>
+                    <i class="nes-icon skull" title="Abandoned"></i>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{js-user-games-by-platform-table}}
+        </tbody>
+    </table>
+
+    <section class="nes-container with-title">
+        <h3 class="title">Stats</h3>
+        <div>
+            <p>
+                {{js-games-by-platform-count}}.
+            </p>
+            <p>
+                {{js-currently-playing-games-count}}.
+            </p>
+            <p>
+                {{js-finished-games-count}}, {{js-abandoned-games-count}} and {{js-pending-games-count}}.
+            </p>
+            <p>
+                Completed {{js-games-completed-percent}} of this platform's catalog.
+                <br/>
+                {{js-user-progress}}
+            </p>
+        </div>
+    </section>
+
+    <section class="nes-container">
+      <div>
+          <p>
+              {{js-back-from}}
+          </p>
+      </div>
+  </section>
+
+  </div>
+</section>

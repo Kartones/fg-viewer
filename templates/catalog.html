@@ -1,0 +1,36 @@
+<section class="nes-container main-container">
+  <div>
+
+    <h2>{{js-username}} Catalog</h2>
+
+    <section class="nes-container with-title">
+        <h3 class="title">Stats</h3>
+        <div>
+            <p>
+                <i class="nes-icon star is-small"></i> <a up-emit="link:user-games" href="#">{{js-games-count}}</a> total, from <a up-emit="link:user-platforms" href="#">{{js-platforms-count}}</a>
+            </p>
+            <p>
+                <i class="nes-icon snes-pad is-small"></i> <a up-emit="link:currently-playing-games" href="#">{{js-currently-playing-games-count}}</a>
+            </p>
+            <p>
+                <i class="nes-icon trophy is-small"></i> <a up-emit="link:finished-games" href="#">{{js-finished-games-count}}</a>
+            </p>
+            <p>
+                <i class="nes-icon trophy is-empty is-small"></i> <a up-emit="link:pending-games" href="#">{{js-pending-games-count}}</span></a>
+            </p>
+            <p>
+                <i class="nes-icon skull is-small"></i> <a up-emit="link:abandoned-games" href="#">{{js-abandoned-games-count}}</a>
+            </p>
+            <p>
+                <i class="nes-icon heart is-small"></i> <a up-emit="link:wishlisted-games" href="#">{{js-wishlisted-games-count}}</a>
+            </p>
+            <p>
+                Completed {{js-games-completed-percent}} of the games catalog
+                <br/>
+                {{js-user-progress}}
+            </p>
+        </div>
+    </section>
+
+  </div>
+</section>

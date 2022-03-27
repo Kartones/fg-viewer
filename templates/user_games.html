@@ -1,0 +1,36 @@
+<section class="nes-container main-container">
+  <div>
+
+    <h2>{{js-username}} games</h2>
+
+    <table class="nes-table is-bordered">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                  Platform
+                </th>
+                <th>
+                    <i class="nes-icon snes-pad" title="Currently playing"></i>
+                    <i class="nes-icon trophy" title="Finished"></i>
+                    <i class="nes-icon skull" title="Abandoned"></i>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{js-user-games-table}}
+        </tbody>
+    </table>
+
+    <section class="nes-container">
+      <div>
+          <p>
+              {{js-back-from}}
+          </p>
+      </div>
+  </section>
+
+  </div>
+</section>

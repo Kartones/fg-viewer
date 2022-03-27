@@ -1,0 +1,38 @@
+<section class="nes-container main-container">
+    <div>
+
+        <h2>{{js-game-name}}</h2>
+
+        {{js-game-dlc-block}}
+
+        <p><strong>Year first published</strong>: {{js-game-publish-date}}</p>
+
+        <p><strong>Available on</strong>:</p>
+        <table class="nes-table is-bordered">
+            <thead>
+                <tr>
+                    <th>Platform Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{js-game-platforms-table}}
+            </tbody>
+        </table>
+
+        <p>
+            View game info at:
+            <ul class="buttons-list">
+                {{js-game-urls}}
+            </ul>
+        </p>
+
+        <section class="nes-container">
+            <div>
+                <p>
+                    {{js-back-from}}
+                </p>
+            </div>
+        </section>
+
+    </div>
+</section>
