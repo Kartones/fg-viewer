@@ -136,3 +136,16 @@ div.header p {
 span.username {
     text-transform: capitalize;
 }
+
+#feedback {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 666;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#feedback span.feedback-error {
+    color: #a51a1c;
+}

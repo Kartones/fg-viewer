@@ -14,7 +14,6 @@ import {
   fillUserPlatformsTemplate,
 } from "./views.js";
 
-// Global variable
 window.appData = null;
 
 (function () {
@@ -114,13 +113,25 @@ window.appData = null;
         }
       )
       .then(() => up.emit("link:catalog", { transition: "cross-fade" }))
-      .catch((err) => console.error(err));
-    // TODO: proper error feedback
+      .catch((error) => {
+        up.emit("feedback:error");
+        console.error(error);
+      });
   }
 
   // Routing
 
   up.compiler("#content", () => readData());
+
+  up.on("feedback:error", () => {
+    up.render("#feedback", {
+      fragment: `<div id="feedback" class="nes-balloon from-right">
+            <span class="feedback-error">
+                There was an error loading the data. <br/>Please reload the page or try again later.
+            </span>
+        </div>`,
+    });
+  });
 
   up.on("link:catalog", (event, _element) => {
     event.transition ||= "move-right";
@@ -128,6 +139,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillCatalogTemplate(),
       transition: event.transition,
+      scroll: "main",
     });
     event.preventDefault();
   });
@@ -136,6 +148,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillAbandonedGamesTemplate(),
       transition: "move-left",
+      scroll: "main",
     });
     event.preventDefault();
   });
@@ -144,6 +157,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillCurrentlyPlayingGamesTemplate(),
       transition: "move-left",
+      scroll: "main",
     });
     event.preventDefault();
   });
@@ -152,6 +166,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillPendingGamesTemplate(),
       transition: "move-left",
+      scroll: "main",
     });
     event.preventDefault();
   });
@@ -160,6 +175,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillFinishedGamesTemplate(),
       transition: "move-left",
+      scroll: "main",
     });
     event.preventDefault();
   });
@@ -168,6 +184,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillWishlistedGamesTemplate(),
       transition: "move-left",
+      scroll: "main",
     });
     event.preventDefault();
   });
@@ -180,6 +197,7 @@ window.appData = null;
         element.dataset.fromId || null
       ),
       transition: "move-left",
+      scroll: "main",
     });
 
     event.preventDefault();
@@ -189,6 +207,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillUserGamesTemplate(),
       transition: "move-left",
+      scroll: "main",
     });
     event.preventDefault();
   });
@@ -201,6 +220,7 @@ window.appData = null;
         element.dataset.fromId || null
       ),
       transition: "move-left",
+      scroll: "main",
     });
 
     event.preventDefault();
@@ -210,6 +230,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillUserPlatformsTemplate(),
       transition: "move-left",
+      scroll: "main",
     });
     event.preventDefault();
   });
