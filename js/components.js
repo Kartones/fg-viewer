@@ -2,6 +2,16 @@
 
 // Fills/replacements (components)
 
+export function nextStateOf(desiredFilter, currentfilter, currentState) {
+  if (desiredFilter !== currentfilter) {
+    return "ascending";
+  } else {
+    return (currentState || "ascending") === "ascending"
+      ? "descending"
+      : "ascending";
+  }
+}
+
 export function fillPlatformName(content, platformId) {
   return content.replaceAll(
     "{{js-platform-name}}",
@@ -62,7 +72,7 @@ export function fillGameURLs(content, gameId) {
       .map(
         (key) => `
         <li>
-            <a class="nes-btn is-primary" href="${gameUrls[key]}" target="_blank">${key}</a>
+            <a class="nes-btn is-primary" href="${gameUrls[key]}" target="_blank" rel="noreferrer noopener">${key}</a>
         </li>`
       )
       .join("")
@@ -204,6 +214,134 @@ export function linkToUserGamesByPlatform(
 }
 
 // Misc.
+
+// Used both for user games and wishlisted games
+export function sortGamesBy(games, field, value) {
+  const nameAscending = (game1, game2) =>
+    appData.games[game1.game_id].name.localeCompare(
+      appData.games[game2.game_id].name
+    );
+  const nameDescending = (game1, game2) =>
+    appData.games[game2.game_id].name.localeCompare(
+      appData.games[game1.game_id].name
+    );
+
+  // only actually change order if there's a difference between both
+  const currentlyPlaying = (game1, game2) => {
+    if (game1.currently_playing && !game2.currently_playing) {
+      return -1;
+    }
+    if (game2.currently_playing && !game1.currently_playing) {
+      return 1;
+    }
+    return 0;
+  };
+  const notCurrentlyPlaying = (game1, game2) => {
+    if (!game1.currently_playing && game2.currently_playing) {
+      return -1;
+    }
+    if (!game2.currently_playing && game1.currently_playing) {
+      return 1;
+    }
+    return 0;
+  };
+
+  const finished = (game1, game2) => {
+    if (game1.finished && !game2.finished) {
+      return -1;
+    }
+    if (game2.finished && !game1.finished) {
+      return 1;
+    }
+    return 0;
+  };
+  const notFinished = (game1, game2) => {
+    if (!game1.finished && game2.finished) {
+      return -1;
+    }
+    if (!game2.finished && game1.finished) {
+      return 1;
+    }
+    return 0;
+  };
+
+  const abandoned = (game1, game2) => {
+    if (game1.abandoned && !game2.abandoned) {
+      return -1;
+    }
+    if (game2.abandoned && !game1.abandoned) {
+      return 1;
+    }
+    return 0;
+  };
+  const notAbandoned = (game1, game2) => {
+    if (!game1.abandoned && game2.abandoned) {
+      return -1;
+    }
+    if (!game2.abandoned && game1.abandoned) {
+      return 1;
+    }
+    return 0;
+  };
+
+  const items = [...games];
+
+  switch (field) {
+    case "name":
+      if (value === "descending") {
+        items.sort(nameDescending);
+      } else {
+        items.sort(nameAscending);
+      }
+      break;
+    case "currentlyPlaying":
+      if (value === "descending") {
+        items.sort(notCurrentlyPlaying);
+      } else {
+        items.sort(currentlyPlaying);
+      }
+      break;
+    case "finished":
+      if (value === "descending") {
+        items.sort(notFinished);
+      } else {
+        items.sort(finished);
+      }
+      break;
+    case "abandoned":
+      if (value === "descending") {
+        items.sort(notAbandoned);
+      } else {
+        items.sort(abandoned);
+      }
+      break;
+  }
+
+  return items;
+}
+
+export function sortPlatformsBy(platforms, _field, value) {
+  const nameAscending = (platformId1, platformId2) =>
+    appData.platforms[platformId1].name.localeCompare(
+      appData.platforms[platformId2].name
+    );
+
+  const nameDescending = (platformId1, platformId2) =>
+    appData.platforms[platformId2].name.localeCompare(
+      appData.platforms[platformId1].name
+    );
+
+  const items = [...platforms];
+
+  // currently only sorting by name
+  if (value === "descending") {
+    items.sort(nameDescending);
+  } else {
+    items.sort(nameAscending);
+  }
+
+  return items;
+}
 
 export function pluralize(literal, target) {
   let value = 0;

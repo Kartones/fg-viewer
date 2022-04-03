@@ -16,15 +16,28 @@ import {
   fillCapitalizedUserName,
   fillProgressBar,
   getGameStatusRow,
+  nextStateOf,
+  sortGamesBy,
+  sortPlatformsBy,
   pluralize,
   linkToGameDetails,
   linkToUserGamesByPlatform,
 } from "./components.js";
 
-export function fillUserPlatformsTemplate() {
+export function fillUserPlatformsTemplate(filter = null, filterValue = null) {
   let content = appData.templates["user-platforms"];
 
-  const platformsFragment = appData.user.platforms.items
+  if (filter === null || filter === "") {
+    filter = "name";
+  }
+
+  const platforms = sortPlatformsBy(
+    appData.user.platforms.items,
+    filter,
+    filterValue
+  );
+
+  const platformsFragment = platforms
     .map(
       (platformId) => `
       <tr>
@@ -39,7 +52,12 @@ export function fillUserPlatformsTemplate() {
   content = fillCapitalizedUserName(content);
   content = fillBackButton(content);
 
-  return content.replace("{{js-user-platforms-table}}", platformsFragment);
+  return content
+    .replaceAll(
+      "{{js-name-filter-value}}",
+      nextStateOf("name", filter, filterValue)
+    )
+    .replace("{{js-user-platforms-table}}", platformsFragment);
 }
 
 export function fillUserGamesTemplate() {
@@ -76,12 +94,22 @@ export function fillUserGamesTemplate() {
 export function fillUserGamesByPlatformTemplate(
   platformId,
   from,
-  fromId = null
+  fromId = null,
+  filter = null,
+  filterValue = null
 ) {
   platformId = parseInt(platformId);
   let content = appData.templates["user-games-by-platform"];
 
-  const userGamesByPlatform = appData.user.games.byPlatform(platformId);
+  if (filter === null || filter === "") {
+    filter = "name";
+  }
+
+  const userGamesByPlatform = sortGamesBy(
+    appData.user.games.byPlatform(platformId),
+    filter,
+    filterValue
+  );
 
   const gamesByPlatformFragment = userGamesByPlatform
     .map(
@@ -117,6 +145,25 @@ export function fillUserGamesByPlatformTemplate(
   content = fillBackButton(content, from, fromId);
 
   return content
+    .replaceAll("{{js-id}}", platformId)
+    .replaceAll("{{js-from}}", from)
+    .replaceAll("{{js-from-id}}", fromId)
+    .replaceAll(
+      "{{js-name-filter-value}}",
+      nextStateOf("name", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-currently-playing-filter-value}}",
+      nextStateOf("currentlyPlaying", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-finished-filter-value}}",
+      nextStateOf("finished", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-abandoned-filter-value}}",
+      nextStateOf("abandoned", filter, filterValue)
+    )
     .replace("{{js-user-games-by-platform-table}}", gamesByPlatformFragment)
     .replaceAll(
       "{{js-games-completed-percent}}",

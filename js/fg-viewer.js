@@ -13,6 +13,7 @@ import {
   fillUserGamesByPlatformTemplate,
   fillUserPlatformsTemplate,
 } from "./views.js";
+import { sortGamesBy, sortPlatformsBy } from "./components.js";
 
 window.appData = null;
 
@@ -40,24 +41,15 @@ window.appData = null;
         ])
       )
       .then(async ([userGamesData, userWishlistedGamesData]) => {
-        // Sorting now avoids multiple sorts later (we'll only .filter() )
+        // Sorting now avoids quite a few additional sorts later (we'll only .filter() )
 
-        const userGames = await userGamesData.json();
-        userGames.sort((game1, game2) =>
-          appData.games[game1.game_id].name.localeCompare(
-            appData.games[game2.game_id].name
-          )
-        );
+        const userGames = sortGamesBy(await userGamesData.json(), "name");
         appData.user.games = userGames;
 
-        const userPlatforms = Array.from(
+        let userPlatforms = Array.from(
           new Set(userGames.map((game) => game.platform_id))
         );
-        userPlatforms.sort((platformId1, platformId2) =>
-          appData.platforms[platformId1].name.localeCompare(
-            appData.platforms[platformId2].name
-          )
-        );
+        userPlatforms = sortPlatformsBy(userPlatforms, "name");
         appData.user.platforms = userPlatforms;
 
         const wishlistedGames = await userWishlistedGamesData.json();
@@ -217,19 +209,24 @@ window.appData = null;
       fragment: fillUserGamesByPlatformTemplate(
         element.dataset.id,
         element.dataset.from || "catalog",
-        element.dataset.fromId || null
+        element.dataset.fromId || null,
+        element.dataset.filter || null,
+        element.dataset.filterValue || null
       ),
-      transition: "move-left",
+      transition: event.transition || "move-left",
       scroll: "main",
     });
 
     event.preventDefault();
   });
 
-  up.on("link:user-platforms", (event, _element) => {
+  up.on("link:user-platforms", (event, element) => {
     up.render("section.main-container", {
-      fragment: fillUserPlatformsTemplate(),
-      transition: "move-left",
+      fragment: fillUserPlatformsTemplate(
+        element.dataset.filter || null,
+        element.dataset.filterValue || null
+      ),
+      transition: event.transition || "move-left",
       scroll: "main",
     });
     event.preventDefault();

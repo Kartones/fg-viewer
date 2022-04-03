@@ -7,12 +7,12 @@
         <thead>
             <tr>
                 <th>
-                    Name
+                    <a up-emit="link:user-games-by-platform" up-emit-props='{"transition":"cross-fade" }' data-filter="name" data-filter-value="{{js-name-filter-value}}" data-id="{{js-id}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#">Name</a>
                 </th>
                 <th>
-                    <i class="nes-icon snes-pad" title="Currently playing"></i>
-                    <i class="nes-icon trophy" title="Finished"></i>
-                    <i class="nes-icon skull" title="Abandoned"></i>
+                    <a up-emit="link:user-games-by-platform" up-emit-props='{"transition":"cross-fade" }' data-filter="currentlyPlaying" data-filter-value="{{js-currently-playing-filter-value}}" data-id="{{js-id}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#"><i class="nes-icon snes-pad" title="Currently playing"></i></a>
+                    <a up-emit="link:user-games-by-platform" up-emit-props='{"transition":"cross-fade" }' data-filter="finished" data-filter-value="{{js-finished-filter-value}}" data-id="{{js-id}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#"><i class="nes-icon trophy" title="Finished"></i></a>
+                    <a up-emit="link:user-games-by-platform" up-emit-props='{"transition":"cross-fade" }' data-filter="abandoned" data-filter-value="{{js-abandoned-filter-value}}" data-id="{{js-id}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#"><i class="nes-icon skull" title="Abandoned"></i></a>
                 </th>
             </tr>
         </thead>
