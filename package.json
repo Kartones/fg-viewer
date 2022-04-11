@@ -2,7 +2,7 @@
   "name": "fg-viewer",
   "version": "1.0.0",
   "main": "index.html",
-  "repository": "git@github.com:Kartones/fg-viewer.git",
+  "repository": "https://github.com/Kartones/fg-viewer/",
   "author": "Kartones",
   "license": "unlicense",
   "private": true,
@@ -14,6 +14,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:watch": "jest --watch",
     "start": "http-server"
   },
   "jest": {

@@ -227,13 +227,27 @@ export function fillAbandonedGamesTemplate() {
   return content.replace("{{js-abandoned-games-table}}", gamesFragment);
 }
 
-export function fillCurrentlyPlayingGamesTemplate() {
+export function fillCurrentlyPlayingGamesTemplate(
+  from,
+  fromId = null,
+  filter = null,
+  filterValue = null
+) {
   let content = appData.templates["currently-playing-games"];
 
   let sourceId = "currently-playing-games";
 
-  const gamesFragment = appData.user.games
-    .currentlyPlaying()
+  if (filter === null || filter === "") {
+    filter = "name";
+  }
+
+  const userGames = sortGamesBy(
+    appData.user.games.currentlyPlaying(),
+    filter,
+    filterValue
+  );
+
+  const gamesFragment = userGames
     .map(
       (userGame) => `
       <tr>
@@ -243,6 +257,13 @@ export function fillCurrentlyPlayingGamesTemplate() {
           <td class="is-centered">
             ${linkToUserGamesByPlatform(userGame.platform_id, false, sourceId)}
           </td>
+          <td class="is-centered">
+            ${getGameStatusRow(userGame, {
+              currentlyPlaying: false,
+              finished: true,
+              abandoned: false,
+            })}
+        </td>
       </tr>`
     )
     .join("");
@@ -251,7 +272,18 @@ export function fillCurrentlyPlayingGamesTemplate() {
   content = fillCurrentlyPlayingGamesCountLiteral(content);
   content = fillBackButton(content);
 
-  return content.replace("{{js-currently-playing-games-table}}", gamesFragment);
+  return content
+    .replaceAll("{{js-from}}", from)
+    .replaceAll("{{js-from-id}}", fromId)
+    .replaceAll(
+      "{{js-name-filter-value}}",
+      nextStateOf("name", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-finished-filter-value}}",
+      nextStateOf("finished", filter, filterValue)
+    )
+    .replace("{{js-currently-playing-games-table}}", gamesFragment);
 }
 
 export function fillPendingGamesTemplate() {

@@ -73,36 +73,17 @@ window.appData = null;
           fetch("templates/user_games.html"),
           fetch("templates/user_games_by_platform.html"),
           fetch("templates/user_platforms.html"),
-        ])
-      )
-      .then(
-        async ([
-          catalogHTML,
-          gameDetailsHTML,
-          abandonedGamesHTML,
-          currentlyPlayingGamesHTML,
-          pendingGamesHTML,
-          finishedGamesHTML,
-          wishlistedGamesHTML,
-          userGamesHTML,
-          userGamesByPlatformHTML,
-          userPlatformsHTML,
-        ]) => {
-          appData.templates["catalog"] = await catalogHTML.text();
-          appData.templates["abandoned-games"] =
-            await abandonedGamesHTML.text();
-          appData.templates["currently-playing-games"] =
-            await currentlyPlayingGamesHTML.text();
-          appData.templates["pending-games"] = await pendingGamesHTML.text();
-          appData.templates["finished-games"] = await finishedGamesHTML.text();
-          appData.templates["wishlisted-games"] =
-            await wishlistedGamesHTML.text();
-          appData.templates["game-details"] = await gameDetailsHTML.text();
-          appData.templates["user-games"] = await userGamesHTML.text();
-          appData.templates["user-games-by-platform"] =
-            await userGamesByPlatformHTML.text();
-          appData.templates["user-platforms"] = await userPlatformsHTML.text();
-        }
+        ]).then((responses) => {
+          return Promise.all(
+            responses.map(async (response) => {
+              const templateName = response.url
+                .slice(response.url.lastIndexOf("/") + 1)
+                .split(".")[0]
+                .replaceAll("_", "-");
+              appData.templates[templateName] = await response.text();
+            })
+          );
+        })
       )
       .then(() => up.emit("link:catalog", { transition: "cross-fade" }))
       .catch((error) => {
@@ -145,10 +126,15 @@ window.appData = null;
     event.preventDefault();
   });
 
-  up.on("link:currently-playing-games", (event, _element) => {
+  up.on("link:currently-playing-games", (event, element) => {
     up.render("section.main-container", {
-      fragment: fillCurrentlyPlayingGamesTemplate(),
-      transition: "move-left",
+      fragment: fillCurrentlyPlayingGamesTemplate(
+        element.dataset.from || "catalog",
+        element.dataset.fromId || null,
+        element.dataset.filter || null,
+        element.dataset.filterValue || null
+      ),
+      transition: event.transition || "move-left",
       scroll: "main",
     });
     event.preventDefault();

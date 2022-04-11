@@ -79,18 +79,33 @@ export function fillGameURLs(content, gameId) {
   );
 }
 
-export function getGameStatusRow(userGame) {
-  return `
-  <i class="nes-icon snes-pad ${
-    userGame.currently_playing ? "" : "is-empty is-half-transparent"
-  }" title="${userGame.currently_playing ? "" : "Not "}Currently playing"></i>
-  <i class="nes-icon trophy ${
-    userGame.finished ? "" : "is-empty is-half-transparent"
-  }" title="${userGame.finished ? "" : "Not "}Finished"></i>
-  <i class="nes-icon skull ${
-    userGame.abandoned ? "" : "is-empty is-half-transparent"
-  }" title="${userGame.abandoned ? "Abandoned" : "Pending"}"></i>
-  `;
+export function getGameStatusRow(
+  userGame,
+  filters = { currentlyPlaying: true, finished: true, abandoned: true }
+) {
+  let markup = "";
+
+  if (filters.currentlyPlaying) {
+    markup += `<i class="nes-icon snes-pad ${
+      userGame.currently_playing ? "" : "is-empty is-half-transparent"
+    }" title="${
+      userGame.currently_playing ? "" : "Not "
+    }Currently playing"></i>`;
+  }
+
+  if (filters.finished) {
+    markup += ` <i class="nes-icon trophy ${
+      userGame.finished ? "" : "is-empty is-half-transparent"
+    }" title="${userGame.finished ? "" : "Not "}Finished"></i>`;
+  }
+
+  if (filters.abandoned) {
+    markup += ` <i class="nes-icon skull ${
+      userGame.abandoned ? "" : "is-empty is-half-transparent"
+    }" title="${userGame.abandoned ? "Abandoned" : "Pending"}"></i>`;
+  }
+
+  return markup;
 }
 
 export function fillGamesByPlatformCountLiteral(content, platformId) {
