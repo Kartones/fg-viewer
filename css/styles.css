@@ -54,7 +54,7 @@ h3.nes-title span {
 }
 
 .nes-table th {
-    background-color: #EAEAEA;
+    background-color: #DBDADA;
     white-space: nowrap;
 }
 
@@ -148,4 +148,20 @@ span.username {
 
 #feedback span.feedback-error {
     color: #a51a1c;
+}
+
+.row-finished {
+    background-color: #FFE;
+}
+
+.row-abandoned {
+    background-color: #F1F1F1;
+}
+
+a, a:visited {
+    color: #0060c6;
+}
+
+a:hover {
+    color: #033f7f;
 }

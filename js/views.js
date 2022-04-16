@@ -16,10 +16,12 @@ import {
   fillCapitalizedUserName,
   fillProgressBar,
   getGameStatusRow,
+  getPaginationBlock,
   nextStateOf,
+  paginate,
+  pluralize,
   sortGamesBy,
   sortPlatformsBy,
-  pluralize,
   linkToGameDetails,
   linkToUserGamesByPlatform,
 } from "./components.js";
@@ -60,18 +62,44 @@ export function fillUserPlatformsTemplate(filter = null, filterValue = null) {
     .replace("{{js-user-platforms-table}}", platformsFragment);
 }
 
-export function fillUserGamesTemplate() {
+export function fillUserGamesTemplate(
+  from,
+  fromId = null,
+  filter = null,
+  filterValue = null,
+  pageNumber = 0
+) {
   let content = appData.templates["user-games"];
+
+  let sourceId = "user-games";
 
   content = fillCapitalizedUserName(content);
   content = fillBackButton(content);
 
-  const gamesFragment = appData.user.games.items
+  if (filter === null || filter === "") {
+    filter = "name";
+  }
+
+  pageNumber = parseInt(pageNumber);
+  const pagination = paginate(
+    sortGamesBy(appData.user.games.items, filter, filterValue),
+    { pageNumber }
+  );
+
+  const userGames = pagination.items;
+
+  const gamesFragment = userGames
     .map(
       (userGame) => `
-      <tr>
+      <tr ${
+        userGame.finished
+          ? 'class="row-finished"'
+          : userGame.abandoned
+          ? 'class="row-abandoned"'
+          : ""
+      }>
         <td>
-          ${linkToGameDetails(userGame.game_id, "user-games")}
+          ${linkToGameDetails(userGame.game_id, sourceId)}
         </td>
         <td class="is-centered">
           ${linkToUserGamesByPlatform(
@@ -88,7 +116,41 @@ export function fillUserGamesTemplate() {
     )
     .join("");
 
-  return content.replace("{{js-user-games-table}}", gamesFragment);
+  return content
+    .replaceAll("{{js-from}}", from)
+    .replaceAll("{{js-from-id}}", fromId)
+    .replaceAll(
+      "{{js-name-filter-value}}",
+      nextStateOf("name", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-platform-filter-value}}",
+      nextStateOf("platform", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-currently-playing-filter-value}}",
+      nextStateOf("currentlyPlaying", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-finished-filter-value}}",
+      nextStateOf("finished", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-abandoned-filter-value}}",
+      nextStateOf("abandoned", filter, filterValue)
+    )
+    .replace("{{js-user-games-table}}", gamesFragment)
+    .replace(
+      "{{js-pagination}}",
+      getPaginationBlock(
+        pagination,
+        sourceId,
+        from,
+        fromId,
+        filter,
+        filterValue
+      )
+    );
 }
 
 export function fillUserGamesByPlatformTemplate(
@@ -96,31 +158,38 @@ export function fillUserGamesByPlatformTemplate(
   from,
   fromId = null,
   filter = null,
-  filterValue = null
+  filterValue = null,
+  pageNumber = 0
 ) {
   platformId = parseInt(platformId);
   let content = appData.templates["user-games-by-platform"];
+
+  let sourceId = "user-games-by-platform";
 
   if (filter === null || filter === "") {
     filter = "name";
   }
 
-  const userGamesByPlatform = sortGamesBy(
-    appData.user.games.byPlatform(platformId),
-    filter,
-    filterValue
+  pageNumber = parseInt(pageNumber);
+  const pagination = paginate(
+    sortGamesBy(appData.user.games.byPlatform(platformId), filter, filterValue),
+    { pageNumber }
   );
+
+  const userGamesByPlatform = pagination.items;
 
   const gamesByPlatformFragment = userGamesByPlatform
     .map(
       (userGame) => `
-      <tr>
+      <tr ${
+        userGame.finished
+          ? 'class="row-finished"'
+          : userGame.abandoned
+          ? 'class="row-abandoned"'
+          : ""
+      }>
           <td>
-            ${linkToGameDetails(
-              userGame.game_id,
-              "user-games-by-platform",
-              platformId
-            )}
+            ${linkToGameDetails(userGame.game_id, sourceId, platformId)}
           </td>
           <td class="is-centered">
             ${getGameStatusRow(userGame)}
@@ -168,6 +237,18 @@ export function fillUserGamesByPlatformTemplate(
     .replaceAll(
       "{{js-games-completed-percent}}",
       `${appData.user.games.completedPlatformCatalogPercent(platformId)}%`
+    )
+    .replace(
+      "{{js-pagination}}",
+      getPaginationBlock(
+        pagination,
+        sourceId,
+        from,
+        fromId,
+        filter,
+        filterValue,
+        platformId
+      )
     );
 }
 
@@ -200,16 +281,33 @@ export function fillGameDetailsTemplate(gameId, from, fromId = null) {
   return content.replace("{{js-game-platforms-table}}", platformsFragment);
 }
 
-export function fillAbandonedGamesTemplate() {
+export function fillAbandonedGamesTemplate(
+  from,
+  fromId = null,
+  filter = null,
+  filterValue = null,
+  pageNumber = 0
+) {
   let content = appData.templates["abandoned-games"];
 
   let sourceId = "abandoned-games";
 
-  const gamesFragment = appData.user.games
-    .abandoned()
+  if (filter === null || filter === "") {
+    filter = "name";
+  }
+
+  pageNumber = parseInt(pageNumber);
+  const pagination = paginate(
+    sortGamesBy(appData.user.games.abandoned(), filter, filterValue),
+    { pageNumber }
+  );
+
+  const userGames = pagination.items;
+
+  const gamesFragment = userGames
     .map(
       (userGame) => `
-      <tr>
+      <tr class="row-abandoned">
           <td>
             ${linkToGameDetails(userGame.game_id, sourceId)}
           </td>
@@ -224,14 +322,37 @@ export function fillAbandonedGamesTemplate() {
   content = fillAbandonedGamesCountLiteral(content);
   content = fillBackButton(content);
 
-  return content.replace("{{js-abandoned-games-table}}", gamesFragment);
+  return content
+    .replaceAll("{{js-from}}", from)
+    .replaceAll("{{js-from-id}}", fromId)
+    .replaceAll(
+      "{{js-name-filter-value}}",
+      nextStateOf("name", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-platform-filter-value}}",
+      nextStateOf("platform", filter, filterValue)
+    )
+    .replace("{{js-abandoned-games-table}}", gamesFragment)
+    .replace(
+      "{{js-pagination}}",
+      getPaginationBlock(
+        pagination,
+        sourceId,
+        from,
+        fromId,
+        filter,
+        filterValue
+      )
+    );
 }
 
 export function fillCurrentlyPlayingGamesTemplate(
   from,
   fromId = null,
   filter = null,
-  filterValue = null
+  filterValue = null,
+  pageNumber = 0
 ) {
   let content = appData.templates["currently-playing-games"];
 
@@ -241,16 +362,18 @@ export function fillCurrentlyPlayingGamesTemplate(
     filter = "name";
   }
 
-  const userGames = sortGamesBy(
-    appData.user.games.currentlyPlaying(),
-    filter,
-    filterValue
+  pageNumber = parseInt(pageNumber);
+  const pagination = paginate(
+    sortGamesBy(appData.user.games.currentlyPlaying(), filter, filterValue),
+    { pageNumber }
   );
+
+  const userGames = pagination.items;
 
   const gamesFragment = userGames
     .map(
       (userGame) => `
-      <tr>
+      <tr ${userGame.finished ? 'class="row-finished"' : ""}>
           <td>
             ${linkToGameDetails(userGame.game_id, sourceId)}
           </td>
@@ -280,19 +403,51 @@ export function fillCurrentlyPlayingGamesTemplate(
       nextStateOf("name", filter, filterValue)
     )
     .replaceAll(
+      "{{js-platform-filter-value}}",
+      nextStateOf("platform", filter, filterValue)
+    )
+    .replaceAll(
       "{{js-finished-filter-value}}",
       nextStateOf("finished", filter, filterValue)
     )
-    .replace("{{js-currently-playing-games-table}}", gamesFragment);
+    .replace("{{js-currently-playing-games-table}}", gamesFragment)
+    .replace(
+      "{{js-pagination}}",
+      getPaginationBlock(
+        pagination,
+        sourceId,
+        from,
+        fromId,
+        filter,
+        filterValue
+      )
+    );
 }
 
-export function fillPendingGamesTemplate() {
+export function fillPendingGamesTemplate(
+  from,
+  fromId = null,
+  filter = null,
+  filterValue = null,
+  pageNumber = 0
+) {
   let content = appData.templates["pending-games"];
 
   let sourceId = "pending-games";
 
-  const gamesFragment = appData.user.games
-    .pending()
+  if (filter === null || filter === "") {
+    filter = "name";
+  }
+
+  pageNumber = parseInt(pageNumber);
+  const pagination = paginate(
+    sortGamesBy(appData.user.games.pending(), filter, filterValue),
+    { pageNumber }
+  );
+
+  const userGames = pagination.items;
+
+  const gamesFragment = userGames
     .map(
       (userGame) => `
       <tr>
@@ -310,27 +465,64 @@ export function fillPendingGamesTemplate() {
   content = fillPendingGamesCountLiteral(content);
   content = fillBackButton(content);
 
-  return content.replace("{{js-pending-games-table}}", gamesFragment);
+  return content
+    .replaceAll("{{js-from}}", from)
+    .replaceAll("{{js-from-id}}", fromId)
+    .replaceAll(
+      "{{js-name-filter-value}}",
+      nextStateOf("name", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-platform-filter-value}}",
+      nextStateOf("platform", filter, filterValue)
+    )
+    .replace("{{js-pending-games-table}}", gamesFragment)
+    .replace(
+      "{{js-pagination}}",
+      getPaginationBlock(
+        pagination,
+        sourceId,
+        from,
+        fromId,
+        filter,
+        filterValue
+      )
+    );
 }
 
-export function fillFinishedGamesTemplate() {
+export function fillFinishedGamesTemplate(
+  from,
+  fromId = null,
+  filter = null,
+  filterValue = null,
+  pageNumber = 0
+) {
   let content = appData.templates["finished-games"];
 
   let sourceId = "finished-games";
 
-  const gamesFragment = appData.user.games
-    .finished()
+  if (filter === null || filter === "") {
+    filter = "name";
+  }
+
+  pageNumber = parseInt(pageNumber);
+
+  const pagination = paginate(
+    sortGamesBy(appData.user.games.finished(), filter, filterValue),
+    { pageNumber }
+  );
+
+  const userGames = pagination.items;
+
+  const gamesFragment = userGames
     .map(
       (userGame) => `
-      <tr>
+      <tr class="row-finished">
           <td>
             ${linkToGameDetails(userGame.game_id, sourceId)}
           </td>
           <td class="is-centered">
             ${linkToUserGamesByPlatform(userGame.platform_id, false, sourceId)}
-          </td>
-          <td class="is-centered">
-            ${userGame.year_finished}
           </td>
       </tr>`
     )
@@ -340,15 +532,55 @@ export function fillFinishedGamesTemplate() {
   content = fillFinishedGamesCountLiteral(content);
   content = fillBackButton(content);
 
-  return content.replace("{{js-finished-games-table}}", gamesFragment);
+  return content
+    .replaceAll("{{js-from}}", from)
+    .replaceAll("{{js-from-id}}", fromId)
+    .replaceAll(
+      "{{js-name-filter-value}}",
+      nextStateOf("name", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-platform-filter-value}}",
+      nextStateOf("platform", filter, filterValue)
+    )
+    .replace("{{js-finished-games-table}}", gamesFragment)
+    .replace(
+      "{{js-pagination}}",
+      getPaginationBlock(
+        pagination,
+        sourceId,
+        from,
+        fromId,
+        filter,
+        filterValue
+      )
+    );
 }
 
-export function fillWishlistedGamesTemplate() {
+export function fillWishlistedGamesTemplate(
+  from,
+  fromId = null,
+  filter = null,
+  filterValue = null,
+  pageNumber = 0
+) {
   let content = appData.templates["wishlisted-games"];
 
   let sourceId = "wishlisted-games";
 
-  const gamesFragment = appData.user.wishlistedGames.items
+  if (filter === null || filter === "") {
+    filter = "name";
+  }
+
+  pageNumber = parseInt(pageNumber);
+  const pagination = paginate(
+    sortGamesBy(appData.user.wishlistedGames.items, filter, filterValue),
+    { pageNumber }
+  );
+
+  const userGames = pagination.items;
+
+  const gamesFragment = userGames
     .map(
       (userGame) => `
       <tr>
@@ -366,7 +598,29 @@ export function fillWishlistedGamesTemplate() {
   content = fillWishlistedGamesCountLiteral(content);
   content = fillBackButton(content);
 
-  return content.replace("{{js-wishlisted-games-table}}", gamesFragment);
+  return content
+    .replaceAll("{{js-from}}", from)
+    .replaceAll("{{js-from-id}}", fromId)
+    .replaceAll(
+      "{{js-name-filter-value}}",
+      nextStateOf("name", filter, filterValue)
+    )
+    .replaceAll(
+      "{{js-platform-filter-value}}",
+      nextStateOf("platform", filter, filterValue)
+    )
+    .replace("{{js-wishlisted-games-table}}", gamesFragment)
+    .replace(
+      "{{js-pagination}}",
+      getPaginationBlock(
+        pagination,
+        sourceId,
+        from,
+        fromId,
+        filter,
+        filterValue
+      )
+    );
 }
 
 export function fillCatalogTemplate() {

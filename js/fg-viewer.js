@@ -117,10 +117,16 @@ window.appData = null;
     event.preventDefault();
   });
 
-  up.on("link:abandoned-games", (event, _element) => {
+  up.on("link:abandoned-games", (event, element) => {
     up.render("section.main-container", {
-      fragment: fillAbandonedGamesTemplate(),
-      transition: "move-left",
+      fragment: fillAbandonedGamesTemplate(
+        element.dataset.from || "catalog",
+        element.dataset.fromId || null,
+        element.dataset.filter || null,
+        element.dataset.filterValue || null,
+        element.dataset.page || 0
+      ),
+      transition: event.transition || "move-left",
       scroll: "main",
     });
     event.preventDefault();
@@ -132,7 +138,8 @@ window.appData = null;
         element.dataset.from || "catalog",
         element.dataset.fromId || null,
         element.dataset.filter || null,
-        element.dataset.filterValue || null
+        element.dataset.filterValue || null,
+        element.dataset.page || 0
       ),
       transition: event.transition || "move-left",
       scroll: "main",
@@ -140,28 +147,46 @@ window.appData = null;
     event.preventDefault();
   });
 
-  up.on("link:pending-games", (event, _element) => {
+  up.on("link:pending-games", (event, element) => {
     up.render("section.main-container", {
-      fragment: fillPendingGamesTemplate(),
-      transition: "move-left",
+      fragment: fillPendingGamesTemplate(
+        element.dataset.from || "catalog",
+        element.dataset.fromId || null,
+        element.dataset.filter || null,
+        element.dataset.filterValue || null,
+        element.dataset.page || 0
+      ),
+      transition: event.transition || "move-left",
       scroll: "main",
     });
     event.preventDefault();
   });
 
-  up.on("link:finished-games", (event, _element) => {
+  up.on("link:finished-games", (event, element) => {
     up.render("section.main-container", {
-      fragment: fillFinishedGamesTemplate(),
-      transition: "move-left",
+      fragment: fillFinishedGamesTemplate(
+        element.dataset.from || "catalog",
+        element.dataset.fromId || null,
+        element.dataset.filter || null,
+        element.dataset.filterValue || null,
+        element.dataset.page || 0
+      ),
+      transition: event.transition || "move-left",
       scroll: "main",
     });
     event.preventDefault();
   });
 
-  up.on("link:wishlisted-games", (event, _element) => {
+  up.on("link:wishlisted-games", (event, element) => {
     up.render("section.main-container", {
-      fragment: fillWishlistedGamesTemplate(),
-      transition: "move-left",
+      fragment: fillWishlistedGamesTemplate(
+        element.dataset.from || "catalog",
+        element.dataset.fromId || null,
+        element.dataset.filter || null,
+        element.dataset.filterValue || null,
+        element.dataset.page || 0
+      ),
+      transition: event.transition || "move-left",
       scroll: "main",
     });
     event.preventDefault();
@@ -181,10 +206,16 @@ window.appData = null;
     event.preventDefault();
   });
 
-  up.on("link:user-games", (event, _element) => {
+  up.on("link:user-games", (event, element) => {
     up.render("section.main-container", {
-      fragment: fillUserGamesTemplate(),
-      transition: "move-left",
+      fragment: fillUserGamesTemplate(
+        element.dataset.from || "catalog",
+        element.dataset.fromId || null,
+        element.dataset.filter || null,
+        element.dataset.filterValue || null,
+        element.dataset.page || 0
+      ),
+      transition: event.transition || "move-left",
       scroll: "main",
     });
     event.preventDefault();
@@ -197,7 +228,8 @@ window.appData = null;
         element.dataset.from || "catalog",
         element.dataset.fromId || null,
         element.dataset.filter || null,
-        element.dataset.filterValue || null
+        element.dataset.filterValue || null,
+        element.dataset.page || 0
       ),
       transition: event.transition || "move-left",
       scroll: "main",

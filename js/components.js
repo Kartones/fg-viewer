@@ -299,6 +299,15 @@ export function sortGamesBy(games, field, value) {
     return 0;
   };
 
+  const platformShortNameAscending = (game1, game2) =>
+    appData.platforms[game1.platform_id].shortname.localeCompare(
+      appData.platforms[game2.platform_id].shortname
+    );
+  const platformShortNameDescending = (game1, game2) =>
+    appData.platforms[game2.platform_id].shortname.localeCompare(
+      appData.platforms[game1.platform_id].shortname
+    );
+
   const items = [...games];
 
   switch (field) {
@@ -330,6 +339,12 @@ export function sortGamesBy(games, field, value) {
         items.sort(abandoned);
       }
       break;
+    case "platform":
+      if (value === "descending") {
+        items.sort(platformShortNameDescending);
+      } else {
+        items.sort(platformShortNameAscending);
+      }
   }
 
   return items;
@@ -356,6 +371,97 @@ export function sortPlatformsBy(platforms, _field, value) {
   }
 
   return items;
+}
+
+export function getPaginationBlock(
+  pagination,
+  emitUrl,
+  from,
+  fromId,
+  filter,
+  filterValue,
+  platformId = null
+) {
+  if (pagination.total === 1) {
+    return "";
+  }
+
+  const dataId = platformId ? `data-id="${platformId}"` : "";
+
+  return `<p>
+    <span>
+    ${
+      pagination.prev !== null
+        ? `
+        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="0" href="#">&laquo; first</a>
+        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="${pagination.prev}" href="#">prev</a>
+        `
+        : `<a class="nes-btn is-disabled" href="#">&laquo; first</a><a class="nes-btn is-disabled" href="#">prev</a>`
+    }
+    <span>
+        Page <strong>${pagination.current + 1}</strong> of <strong>${
+    pagination.total
+  }</strong>
+    </span>
+
+    ${
+      pagination.next !== null
+        ? `
+        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="${
+            pagination.next
+          }" href="#">next</a>
+        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="${
+            pagination.total - 1
+          }" href="#">last &raquo;</a>
+        `
+        : `<a class="nes-btn is-disabled" href="#">next</a><a class="nes-btn is-disabled" href="#">last &raquo;</a>`
+    }
+    </span></p>`;
+}
+
+export function paginate(items, options = {}) {
+  options = {
+    pageNumber: 0,
+    pageSize: 100,
+    ...options,
+  };
+  let response = {
+    items: [],
+    current: 0,
+    prev: null,
+    next: null,
+    total: 1,
+  };
+
+  if (items.length === 0) {
+    return response;
+  }
+
+  options.pageSize = Math.min(Math.max(1, options.pageSize), items.length);
+
+  response.total = Math.ceil(items.length / options.pageSize);
+
+  options.pageNumber = Math.min(
+    Math.max(0, options.pageNumber),
+    response.total - 1
+  );
+
+  response.items = items.slice(
+    options.pageNumber * options.pageSize,
+    Math.min((options.pageNumber + 1) * options.pageSize, items.length)
+  );
+
+  response.current = options.pageNumber;
+
+  if (response.current > 0 && response.total > 1) {
+    response.prev = response.current - 1;
+  }
+
+  if (response.current < response.total - 1) {
+    response.next = response.current + 1;
+  }
+
+  return response;
 }
 
 export function pluralize(literal, target) {
