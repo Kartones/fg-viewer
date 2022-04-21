@@ -2,7 +2,7 @@
 
 // Fills/replacements (components)
 
-export function nextStateOf(desiredFilter, currentfilter, currentState) {
+function nextStateOf(desiredFilter, currentfilter, currentState) {
   if (desiredFilter !== currentfilter) {
     return "ascending";
   } else {
@@ -79,7 +79,7 @@ export function fillGameURLs(content, gameId) {
   );
 }
 
-export function getGameStatusRow(
+function getGameStatusRow(
   userGame,
   filters = { currentlyPlaying: true, finished: true, abandoned: true }
 ) {
@@ -133,6 +133,40 @@ export function fillCurrentlyPlayingGamesCountLiteral(
   );
 }
 
+export function fillCatalogGamesCount(content) {
+  return content.replaceAll(
+    "{{js-games-count}}",
+    `<strong>${appData.user.games.count}</strong> ${pluralize(
+      "game",
+      appData.user.games
+    )}`
+  );
+}
+
+export function fillCatalogPlatformsCount(content) {
+  return content.replaceAll(
+    "{{js-platforms-count}}",
+    `<strong>${appData.user.platforms.count}</strong> ${pluralize(
+      "platform",
+      appData.user.platforms
+    )}`
+  );
+}
+
+export function fillCatalogGamesCompletedPercent(content) {
+  return content.replaceAll(
+    "{{js-games-completed-percent}}",
+    `${appData.user.games.completedCatalogPercent()}%`
+  );
+}
+
+export function fillGamesByPlatformCompletedPercent(content, platformId) {
+  return content.replaceAll(
+    "{{js-games-completed-percent}}",
+    `${appData.user.games.completedPlatformCatalogPercent(platformId)}%`
+  );
+}
+
 export function fillAbandonedGamesCountLiteral(content, platformId = null) {
   const items = platformId
     ? appData.user.games.abandonedByPlatform(platformId)
@@ -173,7 +207,25 @@ export function fillWishlistedGamesCountLiteral(content, platformId = null) {
   );
 }
 
-export function fillProgressBar(
+export function fillCatalogGamesProgressBar(content) {
+  return fillProgressBar(
+    content,
+    appData.user.games.completedCatalogPercent(),
+    appData.user.games.pending().length,
+    appData.user.games.count
+  );
+}
+
+export function fillGamesByPlatformProgressBar(content, platformId) {
+  return fillProgressBar(
+    content,
+    appData.user.games.completedPlatformCatalogPercent(platformId),
+    appData.user.games.pendingByPlatform(platformId).length,
+    appData.user.games.byPlatform(platformId).length
+  );
+}
+
+function fillProgressBar(
   content,
   completedPercent,
   pendingItemsCount,
@@ -208,20 +260,168 @@ export function fillBackButton(content, from = "catalog", id = null) {
   );
 }
 
-export function linkToGameDetails(gameId, from, fromId = null) {
+export function fillDataFields(content, fields = {}, values = {}) {
+  fields = {
+    ...{
+      from: true,
+      fromId: true,
+      platformId: false, // `id`
+      nameFilter: true,
+      platformFilter: false,
+      currentlyPlayingFilter: false,
+      finishedFilter: false,
+      abandonedFilter: false,
+    },
+    ...fields,
+  };
+
+  if (fields.from) {
+    content = content.replaceAll("{{js-from}}", values.from);
+  }
+  if (fields.fromId) {
+    content = content.replaceAll("{{js-from-id}}", values.fromId);
+  }
+  if (fields.platformId) {
+    content = content.replaceAll("{{js-id}}", values.platformId);
+  }
+  if (fields.nameFilter) {
+    content = content.replaceAll(
+      "{{js-name-filter-value}}",
+      nextStateOf("name", values.filter, values.filterValue)
+    );
+  }
+  if (fields.platformFilter) {
+    content = content.replaceAll(
+      "{{js-platform-filter-value}}",
+      nextStateOf("platform", values.filter, values.filterValue)
+    );
+  }
+  if (fields.finishedFilter) {
+    content = content.replaceAll(
+      "{{js-finished-filter-value}}",
+      nextStateOf("finished", values.filter, values.filterValue)
+    );
+  }
+  if (fields.currentlyPlayingFilter) {
+    content = content.replaceAll(
+      "{{js-currently-playing-filter-value}}",
+      nextStateOf("currentlyPlaying", values.filter, values.filterValue)
+    );
+  }
+  if (fields.abandonedFilter) {
+    content = content.replaceAll(
+      "{{js-abandoned-filter-value}}",
+      nextStateOf("abandoned", values.filter, values.filterValue)
+    );
+  }
+
+  return content;
+}
+
+export function fillTableRows(
+  content,
+  items,
+  sourceId,
+  tableTemplateId,
+  columns = {},
+  options = {}
+) {
+  columns = {
+    ...{
+      platformLongName: false,
+      platformShortName: false,
+      gameName: false,
+      gameStatusAll: false,
+      gameStatusFinished: false,
+    },
+    ...columns,
+  };
+  options = {
+    ...{
+      isPlatformsList: false,
+      gameId: null,
+    },
+    ...options,
+  };
+
+  let itemsFragment;
+
+  if (options.isPlatformsList) {
+    itemsFragment = items
+      .map((platformId) => {
+        let row = "<tr>";
+
+        if (columns.platformLongName) {
+          row += `<td>
+          ${linkToUserGamesByPlatform(
+            platformId,
+            true,
+            sourceId,
+            options.gameId
+          )}
+          </td>`;
+        }
+
+        row += "</tr>";
+        return row;
+      })
+      .join("");
+  } else {
+    itemsFragment = items
+      .map((game) => {
+        let row = `<tr ${
+          game.finished
+            ? 'class="row-finished"'
+            : game.abandoned
+            ? 'class="row-abandoned"'
+            : ""
+        }>`;
+
+        if (columns.gameName) {
+          row += `<td>${linkToGameDetails(game.game_id, sourceId)}</td>`;
+        }
+        if (columns.platformShortName) {
+          row += `<td class="is-centered">
+          ${linkToUserGamesByPlatform(game.platform_id, false, sourceId)}
+          </td>`;
+        }
+        if (columns.gameStatusAll) {
+          row += `<td class="is-centered">${getGameStatusRow(game)}</td>`;
+        }
+        if (columns.gameStatusFinished) {
+          row += `<td class="is-centered">
+          ${getGameStatusRow(game, {
+            currentlyPlaying: false,
+            finished: true,
+            abandoned: false,
+          })}
+          </td>`;
+        }
+
+        row += "</tr>";
+
+        return row;
+      })
+      .join("");
+  }
+
+  return content.replace(tableTemplateId, itemsFragment);
+}
+
+function linkToGameDetails(gameId, from, fromId = null) {
   const fromIdFragment = fromId ? `data-from-id="${fromId}"` : "";
 
   return `<a up-emit="link:game-details" data-id="${gameId}" data-from="${from}" ${fromIdFragment} href="#">${appData.games[gameId].name}</a>`;
 }
 
-export function linkToUserGamesByPlatform(
+function linkToUserGamesByPlatform(
   platformId,
-  longName,
+  useLongName,
   from,
   fromId = null
 ) {
   const fromIdFragment = fromId ? `data-from-id="${fromId}"` : "";
-  const name = longName
+  const name = useLongName
     ? appData.platforms[platformId].name
     : appData.platforms[platformId].shortname;
 
@@ -373,7 +573,8 @@ export function sortPlatformsBy(platforms, _field, value) {
   return items;
 }
 
-export function getPaginationBlock(
+export function fillPaginationBlock(
+  content,
   pagination,
   emitUrl,
   from,
@@ -383,12 +584,14 @@ export function getPaginationBlock(
   platformId = null
 ) {
   if (pagination.total === 1) {
-    return "";
+    return content.replace("{{js-pagination}}", "");
   }
 
   const dataId = platformId ? `data-id="${platformId}"` : "";
 
-  return `<p>
+  return content.replace(
+    "{{js-pagination}}",
+    `<p>
     <span>
     ${
       pagination.prev !== null
@@ -400,8 +603,8 @@ export function getPaginationBlock(
     }
     <span>
         Page <strong>${pagination.current + 1}</strong> of <strong>${
-    pagination.total
-  }</strong>
+      pagination.total
+    }</strong>
     </span>
 
     ${
@@ -416,13 +619,14 @@ export function getPaginationBlock(
         `
         : `<a class="nes-btn is-disabled" href="#">next</a><a class="nes-btn is-disabled" href="#">last &raquo;</a>`
     }
-    </span></p>`;
+    </span></p>`
+  );
 }
 
 export function paginate(items, options = {}) {
   options = {
     pageNumber: 0,
-    pageSize: 100,
+    pageSize: 50,
     ...options,
   };
   let response = {
