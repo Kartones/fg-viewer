@@ -1,7 +1,5 @@
 "use strict";
 
-// Fills/replacements (components)
-
 function nextStateOf(desiredFilter, currentfilter, currentState) {
   if (desiredFilter !== currentfilter) {
     return "ascending";
@@ -322,7 +320,6 @@ export function fillTableRows(
   content,
   items,
   sourceId,
-  tableTemplateId,
   columns = {},
   options = {}
 ) {
@@ -405,7 +402,7 @@ export function fillTableRows(
       .join("");
   }
 
-  return content.replace(tableTemplateId, itemsFragment);
+  return content.replace("{{js-table-rows}}", itemsFragment);
 }
 
 function linkToGameDetails(gameId, from, fromId = null) {
@@ -427,8 +424,6 @@ function linkToUserGamesByPlatform(
 
   return `<a up-emit="link:user-games-by-platform" data-id="${platformId}" data-from="${from}" ${fromIdFragment} href="#">${name}</a>`;
 }
-
-// Misc.
 
 // Used both for user games and wishlisted games
 export function sortGamesBy(games, field, value) {

@@ -11,11 +11,6 @@ class UserGames {
     return this.items.length;
   }
 
-  // TODO: delete if not used
-  byId(gameId) {
-    return this.items.filter((game) => game.game_id === gameId).shift();
-  }
-
   currentlyPlaying() {
     return this.items.filter((game) => game.currently_playing);
   }

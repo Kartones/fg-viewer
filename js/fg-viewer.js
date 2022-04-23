@@ -14,6 +14,7 @@ import {
   fillUserPlatformsTemplate,
 } from "./views.js";
 import { sortGamesBy, sortPlatformsBy } from "./components.js";
+import { DEFAULT_FILTER, DEFAULT_SOURCE_ID } from "./enums.js";
 
 window.appData = null;
 
@@ -120,11 +121,11 @@ window.appData = null;
   up.on("link:abandoned-games", (event, element) => {
     up.render("section.main-container", {
       fragment: fillAbandonedGamesTemplate(
-        element.dataset.from || "catalog",
-        element.dataset.fromId || null,
-        element.dataset.filter || null,
-        element.dataset.filterValue || null,
-        element.dataset.page || 0
+        element.dataset.from || DEFAULT_SOURCE_ID,
+        element.dataset.fromId || "",
+        element.dataset.filter || DEFAULT_FILTER,
+        element.dataset.filterValue || "",
+        parseInt(element.dataset.page || 0)
       ),
       transition: event.transition || "move-left",
       scroll: "main",
@@ -135,11 +136,11 @@ window.appData = null;
   up.on("link:currently-playing-games", (event, element) => {
     up.render("section.main-container", {
       fragment: fillCurrentlyPlayingGamesTemplate(
-        element.dataset.from || "catalog",
-        element.dataset.fromId || null,
-        element.dataset.filter || null,
-        element.dataset.filterValue || null,
-        element.dataset.page || 0
+        element.dataset.from || DEFAULT_SOURCE_ID,
+        element.dataset.fromId || "",
+        element.dataset.filter || DEFAULT_FILTER,
+        element.dataset.filterValue || "",
+        parseInt(element.dataset.page || 0)
       ),
       transition: event.transition || "move-left",
       scroll: "main",
@@ -150,11 +151,11 @@ window.appData = null;
   up.on("link:pending-games", (event, element) => {
     up.render("section.main-container", {
       fragment: fillPendingGamesTemplate(
-        element.dataset.from || "catalog",
-        element.dataset.fromId || null,
-        element.dataset.filter || null,
-        element.dataset.filterValue || null,
-        element.dataset.page || 0
+        element.dataset.from || DEFAULT_SOURCE_ID,
+        element.dataset.fromId || "",
+        element.dataset.filter || DEFAULT_FILTER,
+        element.dataset.filterValue || "",
+        parseInt(element.dataset.page || 0)
       ),
       transition: event.transition || "move-left",
       scroll: "main",
@@ -165,11 +166,11 @@ window.appData = null;
   up.on("link:finished-games", (event, element) => {
     up.render("section.main-container", {
       fragment: fillFinishedGamesTemplate(
-        element.dataset.from || "catalog",
-        element.dataset.fromId || null,
-        element.dataset.filter || null,
-        element.dataset.filterValue || null,
-        element.dataset.page || 0
+        element.dataset.from || DEFAULT_SOURCE_ID,
+        element.dataset.fromId || "",
+        element.dataset.filter || DEFAULT_FILTER,
+        element.dataset.filterValue || "",
+        parseInt(element.dataset.page || 0)
       ),
       transition: event.transition || "move-left",
       scroll: "main",
@@ -180,11 +181,11 @@ window.appData = null;
   up.on("link:wishlisted-games", (event, element) => {
     up.render("section.main-container", {
       fragment: fillWishlistedGamesTemplate(
-        element.dataset.from || "catalog",
-        element.dataset.fromId || null,
-        element.dataset.filter || null,
-        element.dataset.filterValue || null,
-        element.dataset.page || 0
+        element.dataset.from || DEFAULT_SOURCE_ID,
+        element.dataset.fromId || "",
+        element.dataset.filter || DEFAULT_FILTER,
+        element.dataset.filterValue || "",
+        parseInt(element.dataset.page || 0)
       ),
       transition: event.transition || "move-left",
       scroll: "main",
@@ -196,10 +197,10 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillGameDetailsTemplate(
         element.dataset.id,
-        element.dataset.from || "catalog",
-        element.dataset.fromId || null
+        element.dataset.from || DEFAULT_SOURCE_ID,
+        element.dataset.fromId || ""
       ),
-      transition: "move-left",
+      transition: event.transition || "move-left",
       scroll: "main",
     });
 
@@ -209,11 +210,11 @@ window.appData = null;
   up.on("link:user-games", (event, element) => {
     up.render("section.main-container", {
       fragment: fillUserGamesTemplate(
-        element.dataset.from || "catalog",
-        element.dataset.fromId || null,
-        element.dataset.filter || null,
-        element.dataset.filterValue || null,
-        element.dataset.page || 0
+        element.dataset.from || DEFAULT_SOURCE_ID,
+        element.dataset.fromId || "",
+        element.dataset.filter || DEFAULT_FILTER,
+        element.dataset.filterValue || "",
+        parseInt(element.dataset.page || 0)
       ),
       transition: event.transition || "move-left",
       scroll: "main",
@@ -225,11 +226,11 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillUserGamesByPlatformTemplate(
         element.dataset.id,
-        element.dataset.from || "catalog",
-        element.dataset.fromId || null,
-        element.dataset.filter || null,
-        element.dataset.filterValue || null,
-        element.dataset.page || 0
+        element.dataset.from || DEFAULT_SOURCE_ID,
+        element.dataset.fromId || "",
+        element.dataset.filter || DEFAULT_FILTER,
+        element.dataset.filterValue || "",
+        parseInt(element.dataset.page || 0)
       ),
       transition: event.transition || "move-left",
       scroll: "main",
@@ -241,8 +242,8 @@ window.appData = null;
   up.on("link:user-platforms", (event, element) => {
     up.render("section.main-container", {
       fragment: fillUserPlatformsTemplate(
-        element.dataset.filter || null,
-        element.dataset.filterValue || null
+        element.dataset.filter || DEFAULT_FILTER,
+        element.dataset.filterValue || ""
       ),
       transition: event.transition || "move-left",
       scroll: "main",

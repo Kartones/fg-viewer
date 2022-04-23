@@ -33,12 +33,12 @@ For production you don't need anything other than a web server (e.g. [`nginx`](h
 
 ## Roadmap
 
-When all the following items are ready, an initial version (with `unpoly`) could be considered as done, and we'd go into a second phase of rewriting the code with `React`.
+When all the following items are ready, an initial version (with `unpoly`) could be considered as done, and we'd go into a second phase of rewriting the code with `React` or similar.
 
 - table sorting visual indicator of current status (ascending, descending, etcetera)
-- refactor sorting code
 - extract everything to a table component
-- more tests: sorting and certain data manipulation at minimum should be covered to ensure works as expected
+- views.js and components.js should not access global state (appData) directly, should be passed as arg
+- more tests
 - self-serve font
 - if at home, don't transition/navigate (using https://unpoly.com/up.history ?)
 - try activating navigation upon rendering (https://unpoly.com/up.render)

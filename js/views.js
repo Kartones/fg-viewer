@@ -28,11 +28,7 @@ import {
   sortPlatformsBy,
 } from "./components.js";
 
-export function fillUserPlatformsTemplate(filter = null, filterValue = null) {
-  if (filter === null || filter === "") {
-    filter = "name";
-  }
-
+export function fillUserPlatformsTemplate(filter, filterValue) {
   let sourceId = "user-platforms";
 
   const platforms = sortPlatformsBy(
@@ -42,14 +38,13 @@ export function fillUserPlatformsTemplate(filter = null, filterValue = null) {
   );
 
   const operations = [
-    (content) => fillCapitalizedUserName(content),
-    (content) => fillBackButton(content),
+    fillCapitalizedUserName,
+    fillBackButton,
     (content) =>
       fillTableRows(
         content,
         platforms,
         sourceId,
-        "{{js-user-platforms-table}}",
         {
           platformLongName: true,
         },
@@ -69,43 +64,32 @@ export function fillUserPlatformsTemplate(filter = null, filterValue = null) {
       ),
   ];
 
-  return renderMarkup("user-platforms", operations);
+  return renderMarkup(sourceId, operations);
 }
 
 export function fillUserGamesTemplate(
   from,
-  fromId = null,
-  filter = null,
-  filterValue = null,
-  pageNumber = 0
+  fromId,
+  filter,
+  filterValue,
+  pageNumber
 ) {
-  if (filter === null || filter === "") {
-    filter = "name";
-  }
-
   let sourceId = "user-games";
 
-  pageNumber = parseInt(pageNumber);
   const pagination = paginate(
     sortGamesBy(appData.user.games.items, filter, filterValue),
     { pageNumber }
   );
 
   const operations = [
-    (content) => fillCapitalizedUserName(content),
-    (content) => fillBackButton(content),
+    fillCapitalizedUserName,
+    fillBackButton,
     (content) =>
-      fillTableRows(
-        content,
-        pagination.items,
-        sourceId,
-        "{{js-user-games-table}}",
-        {
-          gameName: true,
-          platformShortName: true,
-          gameStatusAll: true,
-        }
-      ),
+      fillTableRows(content, pagination.items, sourceId, {
+        gameName: true,
+        platformShortName: true,
+        gameStatusAll: true,
+      }),
     (content) =>
       fillPaginationBlock(
         content,
@@ -129,32 +113,27 @@ export function fillUserGamesTemplate(
       ),
   ];
 
-  return renderMarkup("user-games", operations);
+  return renderMarkup(sourceId, operations);
 }
 
 export function fillUserGamesByPlatformTemplate(
   platformId,
   from,
-  fromId = null,
-  filter = null,
-  filterValue = null,
-  pageNumber = 0
+  fromId,
+  filter,
+  filterValue,
+  pageNumber
 ) {
   platformId = parseInt(platformId);
-  if (filter === null || filter === "") {
-    filter = "name";
-  }
-
   let sourceId = "user-games-by-platform";
 
-  pageNumber = parseInt(pageNumber);
   const pagination = paginate(
     sortGamesBy(appData.user.games.byPlatform(platformId), filter, filterValue),
     { pageNumber }
   );
 
   const operations = [
-    (content) => fillCapitalizedUserName(content),
+    fillCapitalizedUserName,
     (content) => fillPlatformName(content, platformId),
     (content) => fillGamesByPlatformCountLiteral(content, platformId),
     (content) => fillAbandonedGamesCountLiteral(content, platformId),
@@ -165,16 +144,10 @@ export function fillUserGamesByPlatformTemplate(
     (content) => fillBackButton(content, from, fromId),
     (content) => fillGamesByPlatformCompletedPercent(content, platformId),
     (content) =>
-      fillTableRows(
-        content,
-        pagination.items,
-        sourceId,
-        "{{js-user-games-by-platform-table}}",
-        {
-          gameName: true,
-          gameStatusAll: true,
-        }
-      ),
+      fillTableRows(content, pagination.items, sourceId, {
+        gameName: true,
+        gameStatusAll: true,
+      }),
     (content) =>
       fillPaginationBlock(
         content,
@@ -200,19 +173,23 @@ export function fillUserGamesByPlatformTemplate(
       ),
   ];
 
-  return renderMarkup("user-games-by-platform", operations);
+  return renderMarkup(sourceId, operations);
 }
 
-export function fillGameDetailsTemplate(gameId, from, fromId = null) {
+export function fillGameDetailsTemplate(gameId, from, fromId) {
   const sourceId = "game-details";
+
+  const gamePlatforms = sortPlatformsBy(
+    appData.games[gameId].platforms,
+    "name"
+  );
 
   const operations = [
     (content) =>
       fillTableRows(
         content,
-        appData.games[gameId].platforms,
+        gamePlatforms,
         sourceId,
-        "{{js-game-platforms-table}}",
         {
           platformLongName: true,
         },
@@ -228,43 +205,32 @@ export function fillGameDetailsTemplate(gameId, from, fromId = null) {
     (content) => fillGameURLs(content, gameId),
   ];
 
-  return renderMarkup("game-details", operations);
+  return renderMarkup(sourceId, operations);
 }
 
 export function fillAbandonedGamesTemplate(
   from,
-  fromId = null,
-  filter = null,
-  filterValue = null,
-  pageNumber = 0
+  fromId,
+  filter,
+  filterValue,
+  pageNumber
 ) {
-  if (filter === null || filter === "") {
-    filter = "name";
-  }
-
   let sourceId = "abandoned-games";
 
-  pageNumber = parseInt(pageNumber);
   const pagination = paginate(
     sortGamesBy(appData.user.games.abandoned(), filter, filterValue),
     { pageNumber }
   );
 
   const operations = [
-    (content) => fillCapitalizedUserName(content),
-    (content) => fillAbandonedGamesCountLiteral(content),
-    (content) => fillBackButton(content),
+    fillCapitalizedUserName,
+    fillAbandonedGamesCountLiteral,
+    fillBackButton,
     (content) =>
-      fillTableRows(
-        content,
-        pagination.items,
-        sourceId,
-        "{{js-abandoned-games-table}}",
-        {
-          gameName: true,
-          platformShortName: true,
-        }
-      ),
+      fillTableRows(content, pagination.items, sourceId, {
+        gameName: true,
+        platformShortName: true,
+      }),
     (content) =>
       fillPaginationBlock(
         content,
@@ -285,43 +251,33 @@ export function fillAbandonedGamesTemplate(
       ),
   ];
 
-  return renderMarkup("abandoned-games", operations);
+  return renderMarkup(sourceId, operations);
 }
 
 export function fillCurrentlyPlayingGamesTemplate(
   from,
-  fromId = null,
-  filter = null,
-  filterValue = null,
-  pageNumber = 0
+  fromId,
+  filter,
+  filterValue,
+  pageNumber
 ) {
-  if (filter === null || filter === "") {
-    filter = "name";
-  }
   let sourceId = "currently-playing-games";
 
-  pageNumber = parseInt(pageNumber);
   const pagination = paginate(
     sortGamesBy(appData.user.games.currentlyPlaying(), filter, filterValue),
     { pageNumber }
   );
 
   const operations = [
-    (content) => fillCapitalizedUserName(content),
-    (content) => fillCurrentlyPlayingGamesCountLiteral(content),
-    (content) => fillBackButton(content),
+    fillCapitalizedUserName,
+    fillCurrentlyPlayingGamesCountLiteral,
+    fillBackButton,
     (content) =>
-      fillTableRows(
-        content,
-        pagination.items,
-        sourceId,
-        "{{js-currently-playing-games-table}}",
-        {
-          gameName: true,
-          platformShortName: true,
-          gameStatusFinished: true,
-        }
-      ),
+      fillTableRows(content, pagination.items, sourceId, {
+        gameName: true,
+        platformShortName: true,
+        gameStatusFinished: true,
+      }),
     (content) =>
       fillPaginationBlock(
         content,
@@ -343,43 +299,32 @@ export function fillCurrentlyPlayingGamesTemplate(
       ),
   ];
 
-  return renderMarkup("currently-playing-games", operations);
+  return renderMarkup(sourceId, operations);
 }
 
 export function fillPendingGamesTemplate(
   from,
-  fromId = null,
-  filter = null,
-  filterValue = null,
-  pageNumber = 0
+  fromId,
+  filter,
+  filterValue,
+  pageNumber
 ) {
-  if (filter === null || filter === "") {
-    filter = "name";
-  }
-
   let sourceId = "pending-games";
 
-  pageNumber = parseInt(pageNumber);
   const pagination = paginate(
     sortGamesBy(appData.user.games.pending(), filter, filterValue),
     { pageNumber }
   );
 
-  const operations = [
-    (content) => fillCapitalizedUserName(content),
-    (content) => fillPendingGamesCountLiteral(content),
-    (content) => fillBackButton(content),
+  const transformations = [
+    fillCapitalizedUserName,
+    fillPendingGamesCountLiteral,
+    fillBackButton,
     (content) =>
-      fillTableRows(
-        content,
-        pagination.items,
-        sourceId,
-        "{{js-pending-games-table}}",
-        {
-          gameName: true,
-          platformShortName: true,
-        }
-      ),
+      fillTableRows(content, pagination.items, sourceId, {
+        gameName: true,
+        platformShortName: true,
+      }),
     (content) =>
       fillPaginationBlock(
         content,
@@ -400,43 +345,32 @@ export function fillPendingGamesTemplate(
       ),
   ];
 
-  return renderMarkup("pending-games", operations);
+  return renderMarkup(sourceId, transformations);
 }
 
 export function fillFinishedGamesTemplate(
   from,
-  fromId = null,
-  filter = null,
-  filterValue = null,
-  pageNumber = 0
+  fromId,
+  filter,
+  filterValue,
+  pageNumber
 ) {
-  if (filter === null || filter === "") {
-    filter = "name";
-  }
-
   let sourceId = "finished-games";
 
-  pageNumber = parseInt(pageNumber);
   const pagination = paginate(
     sortGamesBy(appData.user.games.finished(), filter, filterValue),
     { pageNumber }
   );
 
-  const operations = [
-    (content) => fillCapitalizedUserName(content),
-    (content) => fillFinishedGamesCountLiteral(content),
-    (content) => fillBackButton(content),
+  const transformations = [
+    fillCapitalizedUserName,
+    fillFinishedGamesCountLiteral,
+    fillBackButton,
     (content) =>
-      fillTableRows(
-        content,
-        pagination.items,
-        sourceId,
-        "{{js-finished-games-table}}",
-        {
-          gameName: true,
-          platformShortName: true,
-        }
-      ),
+      fillTableRows(content, pagination.items, sourceId, {
+        gameName: true,
+        platformShortName: true,
+      }),
     (content) =>
       fillPaginationBlock(
         content,
@@ -457,43 +391,32 @@ export function fillFinishedGamesTemplate(
       ),
   ];
 
-  return renderMarkup("finished-games", operations);
+  return renderMarkup(sourceId, transformations);
 }
 
 export function fillWishlistedGamesTemplate(
   from,
-  fromId = null,
-  filter = null,
-  filterValue = null,
-  pageNumber = 0
+  fromId,
+  filter,
+  filterValue,
+  pageNumber
 ) {
-  if (filter === null || filter === "") {
-    filter = "name";
-  }
-
   let sourceId = "wishlisted-games";
 
-  pageNumber = parseInt(pageNumber);
   const pagination = paginate(
     sortGamesBy(appData.user.wishlistedGames.items, filter, filterValue),
     { pageNumber }
   );
 
-  const operations = [
-    (content) => fillCapitalizedUserName(content),
-    (content) => fillWishlistedGamesCountLiteral(content),
-    (content) => fillBackButton(content),
+  const transformations = [
+    fillCapitalizedUserName,
+    fillWishlistedGamesCountLiteral,
+    fillBackButton,
     (content) =>
-      fillTableRows(
-        content,
-        pagination.items,
-        sourceId,
-        "{{js-wishlisted-games-table}}",
-        {
-          gameName: true,
-          platformShortName: true,
-        }
-      ),
+      fillTableRows(content, pagination.items, sourceId, {
+        gameName: true,
+        platformShortName: true,
+      }),
     (content) =>
       fillPaginationBlock(
         content,
@@ -514,29 +437,31 @@ export function fillWishlistedGamesTemplate(
       ),
   ];
 
-  return renderMarkup("wishlisted-games", operations);
+  return renderMarkup(sourceId, transformations);
 }
 
 export function fillCatalogTemplate() {
-  const operations = [
-    (content) => fillCatalogGamesCount(content),
-    (content) => fillCatalogPlatformsCount(content),
-    (content) => fillCatalogGamesCompletedPercent(content),
-    (content) => fillCapitalizedUserName(content),
-    (content) => fillCurrentlyPlayingGamesCountLiteral(content),
-    (content) => fillPendingGamesCountLiteral(content),
-    (content) => fillFinishedGamesCountLiteral(content),
-    (content) => fillAbandonedGamesCountLiteral(content),
-    (content) => fillWishlistedGamesCountLiteral(content),
-    (content) => fillCatalogGamesProgressBar(content),
+  const sourceId = "catalog";
+
+  const transformations = [
+    fillCatalogGamesCount,
+    fillCatalogPlatformsCount,
+    fillCatalogGamesCompletedPercent,
+    fillCapitalizedUserName,
+    fillCurrentlyPlayingGamesCountLiteral,
+    fillPendingGamesCountLiteral,
+    fillFinishedGamesCountLiteral,
+    fillAbandonedGamesCountLiteral,
+    fillWishlistedGamesCountLiteral,
+    fillCatalogGamesProgressBar,
   ];
 
-  return renderMarkup("catalog", operations);
+  return renderMarkup(sourceId, transformations);
 }
 
-function renderMarkup(templateId, operations) {
-  return operations.reduce(
-    (previousValue, currentFn) => currentFn(previousValue),
+function renderMarkup(templateId, transformations) {
+  return transformations.reduce(
+    (content, fn) => fn(content),
     appData.templates[templateId]
   );
 }
