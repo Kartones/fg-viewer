@@ -35,14 +35,12 @@ For production you don't need anything other than a web server (e.g. [`nginx`](h
 
 When all the following items are ready, an initial version (with `unpoly`) could be considered as done, and we'd go into a second phase of rewriting the code with `React` or similar.
 
-- table sorting visual indicator of current status (ascending, descending, etcetera)
-- extract everything to a table component
-- views.js and components.js should not access global state (appData) directly, should be passed as arg
-- more tests
+- add a searchable name filter component to all game listings
 - self-serve font
 - if at home, don't transition/navigate (using https://unpoly.com/up.history ?)
 - try activating navigation upon rendering (https://unpoly.com/up.render)
+- more tests
 - constants/enums
 - revisit `components.js` to extract to functions more logic, and think about changing some stuff to be Decorators or Builders
-- add a searchable name filter component to all game listings
+- views.js and components.js should not access global state (appData) directly, should be passed as arg
 - build true components, like a table. For historical reasons the table was built in chunks (via "template tags" at the original FG project), but now can be a proper reusable class

@@ -165,3 +165,7 @@ a, a:visited {
 a:hover {
     color: #033f7f;
 }
+
+span.dir {
+    vertical-align: super;
+}

@@ -1,9 +1,11 @@
 "use strict";
 
 import {
+  fillAbandonedColumn,
   fillAbandonedGamesCountLiteral,
   fillBackButton,
   fillCapitalizedUserName,
+  fillCatalogAutoExcludeCurrentValue,
   fillCatalogGamesCompletedPercent,
   fillCatalogGamesCount,
   fillDataFields,
@@ -23,6 +25,7 @@ import {
   fillTableRows,
   fillWishlistedGamesCountLiteral,
   fillPaginationBlock,
+  filterGamesBy,
   paginate,
   sortGamesBy,
   sortPlatformsBy,
@@ -76,19 +79,32 @@ export function fillUserGamesTemplate(
 ) {
   let sourceId = "user-games";
 
+  const autoExcludeAbandoned = appData.preferences.shouldAutoExclude();
+
   const pagination = paginate(
-    sortGamesBy(appData.user.games.items, filter, filterValue),
+    sortGamesBy(
+      filterGamesBy(
+        appData.user.games.items,
+        "abandoned",
+        autoExcludeAbandoned
+      ),
+      filter,
+      filterValue
+    ),
     { pageNumber }
   );
 
   const operations = [
     fillCapitalizedUserName,
     fillBackButton,
+    (content) => fillAbandonedColumn(content, autoExcludeAbandoned),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
         platformShortName: true,
-        gameStatusAll: true,
+        gameStatusAll: !autoExcludeAbandoned,
+        gameStatusFinished: autoExcludeAbandoned,
+        gameStatusCurrentlyPlaying: autoExcludeAbandoned,
       }),
     (content) =>
       fillPaginationBlock(
@@ -127,13 +143,24 @@ export function fillUserGamesByPlatformTemplate(
   platformId = parseInt(platformId);
   let sourceId = "user-games-by-platform";
 
+  const autoExcludeAbandoned = appData.preferences.shouldAutoExclude();
+
   const pagination = paginate(
-    sortGamesBy(appData.user.games.byPlatform(platformId), filter, filterValue),
+    sortGamesBy(
+      filterGamesBy(
+        appData.user.games.byPlatform(platformId),
+        "abandoned",
+        autoExcludeAbandoned
+      ),
+      filter,
+      filterValue
+    ),
     { pageNumber }
   );
 
   const operations = [
     fillCapitalizedUserName,
+    (content) => fillAbandonedColumn(content, autoExcludeAbandoned, true),
     (content) => fillPlatformName(content, platformId),
     (content) => fillGamesByPlatformCountLiteral(content, platformId),
     (content) => fillAbandonedGamesCountLiteral(content, platformId),
@@ -146,7 +173,9 @@ export function fillUserGamesByPlatformTemplate(
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
-        gameStatusAll: true,
+        gameStatusAll: !autoExcludeAbandoned,
+        gameStatusFinished: autoExcludeAbandoned,
+        gameStatusCurrentlyPlaying: autoExcludeAbandoned,
       }),
     (content) =>
       fillPaginationBlock(
@@ -454,6 +483,7 @@ export function fillCatalogTemplate() {
     fillAbandonedGamesCountLiteral,
     fillWishlistedGamesCountLiteral,
     fillCatalogGamesProgressBar,
+    fillCatalogAutoExcludeCurrentValue,
   ];
 
   return renderMarkup(sourceId, transformations);

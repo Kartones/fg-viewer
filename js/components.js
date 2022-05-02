@@ -10,6 +10,27 @@ function nextStateOf(desiredFilter, currentfilter, currentState) {
   }
 }
 
+function titleSuffixOf(desiredFilter, currentfilter, currentState) {
+  if (desiredFilter !== currentfilter) {
+    return "";
+  } else {
+    if (desiredFilter === "name") {
+      return (currentState || "ascending") === "ascending"
+        ? '<span class="dir">▼</span>'
+        : '<span class="dir">▲</span>';
+    } else {
+      switch (currentState) {
+        case "ascending":
+          return '<span class="dir">▼</span>';
+        case "descending":
+          return '<span class="dir">▲</span>';
+        default:
+          return "";
+      }
+    }
+  }
+}
+
 export function fillPlatformName(content, platformId) {
   return content.replaceAll(
     "{{js-platform-name}}",
@@ -84,23 +105,23 @@ function getGameStatusRow(
   let markup = "";
 
   if (filters.currentlyPlaying) {
-    markup += `<i class="nes-icon snes-pad ${
+    markup += `<td class="is-centered"><i class="nes-icon snes-pad ${
       userGame.currently_playing ? "" : "is-empty is-half-transparent"
     }" title="${
       userGame.currently_playing ? "" : "Not "
-    }Currently playing"></i>`;
+    }Currently playing"></i></td>`;
   }
 
   if (filters.finished) {
-    markup += ` <i class="nes-icon trophy ${
+    markup += `<td class="is-centered"><i class="nes-icon trophy ${
       userGame.finished ? "" : "is-empty is-half-transparent"
-    }" title="${userGame.finished ? "" : "Not "}Finished"></i>`;
+    }" title="${userGame.finished ? "" : "Not "}Finished"></i></td>`;
   }
 
   if (filters.abandoned) {
-    markup += ` <i class="nes-icon skull ${
+    markup += `<td class="is-centered"><i class="nes-icon skull ${
       userGame.abandoned ? "" : "is-empty is-half-transparent"
-    }" title="${userGame.abandoned ? "Abandoned" : "Pending"}"></i>`;
+    }" title="${userGame.abandoned ? "Abandoned" : "Pending"}"></i></td>`;
   }
 
   return markup;
@@ -138,6 +159,36 @@ export function fillCatalogGamesCount(content) {
       "game",
       appData.user.games
     )}`
+  );
+}
+
+export function fillCatalogAutoExcludeCurrentValue(content) {
+  return content.replace(
+    "{{js-auto-exclude}}",
+    appData.preferences.shouldAutoExclude() ? "checked" : ""
+  );
+}
+
+export function fillAbandonedColumn(
+  content,
+  autoExcludeValue,
+  hasPlatformId = false
+) {
+  const linkDestination = hasPlatformId
+    ? "user-games-by-platform"
+    : "user-games";
+
+  return content.replace(
+    "{{js-abandoned-column}}",
+    autoExcludeValue
+      ? ""
+      : `
+  <th>
+  <a up-emit="link:${linkDestination}" up-emit-props='{"transition":"cross-fade" }' data-filter="abandoned" data-filter-value="{{js-abandoned-filter-value}}" ${
+          hasPlatformId ? 'data-id="{{js-id}}"' : ""
+        } data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#"><i class="nes-icon skull" title="Abandoned"></i>{{js-abandoned-filter-title-suffix}}</a>
+  </th>
+  `
   );
 }
 
@@ -287,11 +338,19 @@ export function fillDataFields(content, fields = {}, values = {}) {
       "{{js-name-filter-value}}",
       nextStateOf("name", values.filter, values.filterValue)
     );
+    content = content.replaceAll(
+      "{{js-name-filter-title-suffix}}",
+      titleSuffixOf("name", values.filter, values.filterValue)
+    );
   }
   if (fields.platformFilter) {
     content = content.replaceAll(
       "{{js-platform-filter-value}}",
       nextStateOf("platform", values.filter, values.filterValue)
+    );
+    content = content.replaceAll(
+      "{{js-platform-filter-title-suffix}}",
+      titleSuffixOf("platform", values.filter, values.filterValue)
     );
   }
   if (fields.finishedFilter) {
@@ -299,17 +358,29 @@ export function fillDataFields(content, fields = {}, values = {}) {
       "{{js-finished-filter-value}}",
       nextStateOf("finished", values.filter, values.filterValue)
     );
+    content = content.replaceAll(
+      "{{js-finished-filter-title-suffix}}",
+      titleSuffixOf("finished", values.filter, values.filterValue)
+    );
   }
   if (fields.currentlyPlayingFilter) {
     content = content.replaceAll(
       "{{js-currently-playing-filter-value}}",
       nextStateOf("currentlyPlaying", values.filter, values.filterValue)
     );
+    content = content.replaceAll(
+      "{{js-currently-playing-filter-title-suffix}}",
+      titleSuffixOf("currentlyPlaying", values.filter, values.filterValue)
+    );
   }
   if (fields.abandonedFilter) {
     content = content.replaceAll(
       "{{js-abandoned-filter-value}}",
       nextStateOf("abandoned", values.filter, values.filterValue)
+    );
+    content = content.replaceAll(
+      "{{js-abandoned-filter-title-suffix}}",
+      titleSuffixOf("abandoned", values.filter, values.filterValue)
     );
   }
 
@@ -329,6 +400,7 @@ export function fillTableRows(
       platformShortName: false,
       gameName: false,
       gameStatusAll: false,
+      gameStatusCurrentlyPlaying: false,
       gameStatusFinished: false,
     },
     ...columns,
@@ -383,16 +455,13 @@ export function fillTableRows(
           </td>`;
         }
         if (columns.gameStatusAll) {
-          row += `<td class="is-centered">${getGameStatusRow(game)}</td>`;
-        }
-        if (columns.gameStatusFinished) {
-          row += `<td class="is-centered">
-          ${getGameStatusRow(game, {
-            currentlyPlaying: false,
-            finished: true,
+          row += getGameStatusRow(game);
+        } else {
+          row += getGameStatusRow(game, {
+            currentlyPlaying: columns.gameStatusCurrentlyPlaying,
+            finished: columns.gameStatusFinished,
             abandoned: false,
-          })}
-          </td>`;
+          });
         }
 
         row += "</tr>";
@@ -423,6 +492,17 @@ function linkToUserGamesByPlatform(
     : appData.platforms[platformId].shortname;
 
   return `<a up-emit="link:user-games-by-platform" data-id="${platformId}" data-from="${from}" ${fromIdFragment} href="#">${name}</a>`;
+}
+
+export function filterGamesBy(games, field, value) {
+  if (field !== "abandoned") {
+    throw new Error(`Filter "${field} not supported`);
+  }
+
+  if (value !== true) {
+    return games;
+  }
+  return games.filter((game) => !game.abandoned);
 }
 
 // Used both for user games and wishlisted games

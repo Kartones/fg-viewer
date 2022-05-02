@@ -151,6 +151,23 @@ class User {
   }
 }
 
+class UserPreferences {
+  shouldAutoExclude() {
+    return (
+      decodeURIComponent(document.cookie)
+        .split(";")
+        .map((c) => c.trim())
+        .find((c) => c.startsWith("auto_exclude")) !== undefined
+    );
+  }
+
+  toggleAutoExclude() {
+    // 1 year when setting
+    const expiration = this.shouldAutoExclude() ? -1 : 31536000;
+    document.cookie = `auto_exclude=abandoned;max-age=${expiration};path=/; SameSite=None; Secure`;
+  }
+}
+
 export class AppData {
   #games;
   #platforms;
@@ -158,6 +175,7 @@ export class AppData {
   #userGames;
   #userWishlistedGames;
   #templates;
+  #preferences;
 
   get user() {
     return this.#user;
@@ -195,6 +213,10 @@ export class AppData {
     return this.#templates;
   }
 
+  get preferences() {
+    return this.#preferences;
+  }
+
   constructor(userData, gamesData, platformsData) {
     this.#user = new User(userData);
     this.#games = Object.assign(
@@ -214,5 +236,6 @@ export class AppData {
       })
     );
     this.#templates = {};
+    this.#preferences = new UserPreferences();
   }
 }
