@@ -14,19 +14,17 @@ function titleSuffixOf(desiredFilter, currentfilter, currentState) {
   if (desiredFilter !== currentfilter) {
     return "";
   } else {
-    if (desiredFilter === "name") {
-      return (currentState || "ascending") === "ascending"
-        ? '<span class="dir">▼</span>'
-        : '<span class="dir">▲</span>';
-    } else {
-      switch (currentState) {
-        case "ascending":
-          return '<span class="dir">▼</span>';
-        case "descending":
-          return '<span class="dir">▲</span>';
-        default:
-          return "";
-      }
+    switch (currentState) {
+      case "ascending":
+        return ["name", "platform"].includes(desiredFilter)
+          ? "↓"
+          : '<span class="dir">↓</span>';
+      case "descending":
+        return ["name", "platform"].includes(desiredFilter)
+          ? "↑"
+          : '<span class="dir">↑</span>';
+      default:
+        return desiredFilter === "name" ? "↓" : "";
     }
   }
 }
