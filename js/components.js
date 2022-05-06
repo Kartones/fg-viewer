@@ -29,6 +29,17 @@ function titleSuffixOf(desiredFilter, currentfilter, currentState) {
   }
 }
 
+export function fillSearchComponent(content) {
+  return content.replaceAll(
+    "{{js-game-search}}",
+    `<select id="gameSearch">
+    ${Object.values(appData.games)
+      .map((game) => `<option value="${game.id}">${game.name}</option>`)
+      .join("")}
+    </select>`
+  );
+}
+
 export function fillPlatformName(content, platformId) {
   return content.replaceAll(
     "{{js-platform-name}}",

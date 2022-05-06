@@ -169,3 +169,7 @@ a:hover {
 span.dir {
     vertical-align: super;
 }
+
+.select {
+    margin-bottom: 64px;
+}

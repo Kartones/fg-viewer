@@ -8,6 +8,8 @@ import {
   fillCatalogAutoExcludeCurrentValue,
   fillCatalogGamesCompletedPercent,
   fillCatalogGamesCount,
+  fillCatalogGamesProgressBar,
+  fillCatalogPlatformsCount,
   fillDataFields,
   fillGameDLCBlock,
   fillGameName,
@@ -18,13 +20,12 @@ import {
   fillGamesByPlatformCompletedPercent,
   fillGamesByPlatformCountLiteral,
   fillGamesByPlatformProgressBar,
+  fillPaginationBlock,
   fillPendingGamesCountLiteral,
   fillPlatformName,
-  fillCatalogPlatformsCount,
-  fillCatalogGamesProgressBar,
+  fillSearchComponent,
   fillTableRows,
   fillWishlistedGamesCountLiteral,
-  fillPaginationBlock,
   filterGamesBy,
   paginate,
   sortGamesBy,
@@ -97,6 +98,7 @@ export function fillUserGamesTemplate(
   const operations = [
     fillCapitalizedUserName,
     fillBackButton,
+    (content) => fillSearchComponent(content),
     (content) => fillAbandonedColumn(content, autoExcludeAbandoned),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {

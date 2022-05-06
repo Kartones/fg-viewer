@@ -219,7 +219,16 @@ window.appData = null;
       transition: event.transition || "move-left",
       scroll: "main",
     });
+
     event.preventDefault();
+  });
+
+  up.on("up:fragment:inserted", function (_event, fragment) {
+    if (fragment.innerHTML.includes('select id="gameSearch"')) {
+      NiceSelect.bind(document.getElementById("gameSearch"), {
+        searchable: true,
+      });
+    }
   });
 
   up.on("link:user-games-by-platform", (event, element) => {
