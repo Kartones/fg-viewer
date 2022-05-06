@@ -169,3 +169,11 @@ a:hover {
 span.dir {
     vertical-align: super;
 }
+
+.select {
+    margin-bottom: 64px;
+}
+
+.nice-select {
+    min-width: 300px;
+}
