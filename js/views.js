@@ -171,12 +171,20 @@ export function fillUserGamesByPlatformTemplate(
     (content) => fillBackButton(content, from, fromId),
     (content) => fillGamesByPlatformCompletedPercent(content, platformId),
     (content) =>
-      fillTableRows(content, pagination.items, sourceId, {
-        gameName: true,
-        gameStatusAll: !autoExcludeAbandoned,
-        gameStatusFinished: autoExcludeAbandoned,
-        gameStatusCurrentlyPlaying: autoExcludeAbandoned,
-      }),
+      fillTableRows(
+        content,
+        pagination.items,
+        sourceId,
+        {
+          gameName: true,
+          gameStatusAll: !autoExcludeAbandoned,
+          gameStatusFinished: autoExcludeAbandoned,
+          gameStatusCurrentlyPlaying: autoExcludeAbandoned,
+        },
+        {
+          fromPlatformId: platformId,
+        }
+      ),
     (content) =>
       fillPaginationBlock(
         content,

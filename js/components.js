@@ -75,6 +75,9 @@ export function fillGameURLs(content, gameId) {
   gameUrls[
     "GameFAQs"
   ] = `https://gamefaqs.gamespot.com/search?game=${urlEncodedName}`;
+  gameUrls[
+    "StragegyWiki"
+  ] = `https://strategywiki.org/w/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
 
   // only for PC (platform 3)
   if (game.platforms.includes(3)) {
@@ -406,6 +409,7 @@ export function fillTableRows(
   options = {
     ...{
       isPlatformsList: false,
+      fromPlatformId: null,
       gameId: null,
     },
     ...options,
@@ -445,7 +449,11 @@ export function fillTableRows(
         }>`;
 
         if (columns.gameName) {
-          row += `<td>${linkToGameDetails(game.game_id, sourceId)}</td>`;
+          row += `<td>${linkToGameDetails(
+            game.game_id,
+            sourceId,
+            options.fromPlatformId
+          )}</td>`;
         }
         if (columns.platformShortName) {
           row += `<td class="is-centered">
