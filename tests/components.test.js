@@ -46,7 +46,7 @@ describe("paging", () => {
   });
 
   it("page size falls back to items count if too big", () => {
-    const pagination = paginate(items, { pageSize: 100 });
+    const pagination = paginate(items, { pageSize: 200 });
     expect(pagination.total).toEqual(1);
   });
 
