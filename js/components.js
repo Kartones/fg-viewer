@@ -707,7 +707,7 @@ export function fillPaginationBlock(
 export function paginate(items, options = {}) {
   options = {
     pageNumber: 0,
-    pageSize: 50,
+    pageSize: 100,
     ...options,
   };
   let response = {
