@@ -7,9 +7,9 @@
   "license": "unlicense",
   "private": true,
   "devDependencies": {
-    "@babel/preset-env": "7.16.11",
+    "@babel/preset-env": "7.18.10",
     "babel-jest": "27.5.1",
-    "http-server": "14.1.0",
+    "http-server": "14.1.1",
     "jest": "27.5.1"
   },
   "scripts": {
