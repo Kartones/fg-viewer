@@ -45,6 +45,10 @@ class UserGames {
     return this.byPlatform(platformId).filter((game) => game.abandoned);
   }
 
+  byGame(gameId) {
+    return this.items.filter((game) => game.game_id === gameId);
+  }
+
   byPlatform(platformId) {
     return this.items.filter((game) => game.platform_id === platformId);
   }

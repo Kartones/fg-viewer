@@ -122,7 +122,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillAbandonedGamesTemplate(
         element.dataset.from || DEFAULT_SOURCE_ID,
-        element.dataset.fromId || "",
+        parseInt(element.dataset.fromId) || "",
         element.dataset.filter || DEFAULT_FILTER,
         element.dataset.filterValue || "",
         parseInt(element.dataset.page || 0)
@@ -137,7 +137,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillCurrentlyPlayingGamesTemplate(
         element.dataset.from || DEFAULT_SOURCE_ID,
-        element.dataset.fromId || "",
+        parseInt(element.dataset.fromId) || "",
         element.dataset.filter || DEFAULT_FILTER,
         element.dataset.filterValue || "",
         parseInt(element.dataset.page || 0)
@@ -152,7 +152,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillPendingGamesTemplate(
         element.dataset.from || DEFAULT_SOURCE_ID,
-        element.dataset.fromId || "",
+        parseInt(element.dataset.fromId) || "",
         element.dataset.filter || DEFAULT_FILTER,
         element.dataset.filterValue || "",
         parseInt(element.dataset.page || 0)
@@ -167,7 +167,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillFinishedGamesTemplate(
         element.dataset.from || DEFAULT_SOURCE_ID,
-        element.dataset.fromId || "",
+        parseInt(element.dataset.fromId) || "",
         element.dataset.filter || DEFAULT_FILTER,
         element.dataset.filterValue || "",
         parseInt(element.dataset.page || 0)
@@ -182,7 +182,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillWishlistedGamesTemplate(
         element.dataset.from || DEFAULT_SOURCE_ID,
-        element.dataset.fromId || "",
+        parseInt(element.dataset.fromId) || "",
         element.dataset.filter || DEFAULT_FILTER,
         element.dataset.filterValue || "",
         parseInt(element.dataset.page || 0)
@@ -196,9 +196,9 @@ window.appData = null;
   up.on("link:game-details", (event, element) => {
     up.render("section.main-container", {
       fragment: fillGameDetailsTemplate(
-        element.dataset.id,
+        parseInt(element.dataset.id),
         element.dataset.from || DEFAULT_SOURCE_ID,
-        element.dataset.fromId || ""
+        parseInt(element.dataset.fromId) || ""
       ),
       transition: event.transition || "move-left",
       scroll: "main",
@@ -211,7 +211,7 @@ window.appData = null;
     up.render("section.main-container", {
       fragment: fillUserGamesTemplate(
         element.dataset.from || DEFAULT_SOURCE_ID,
-        element.dataset.fromId || "",
+        parseInt(element.dataset.fromId) || "",
         element.dataset.filter || DEFAULT_FILTER,
         element.dataset.filterValue || "",
         parseInt(element.dataset.page || 0)
@@ -225,9 +225,9 @@ window.appData = null;
   up.on("link:user-games-by-platform", (event, element) => {
     up.render("section.main-container", {
       fragment: fillUserGamesByPlatformTemplate(
-        element.dataset.id,
+        parseInt(element.dataset.id),
         element.dataset.from || DEFAULT_SOURCE_ID,
-        element.dataset.fromId || "",
+        parseInt(element.dataset.fromId) || "",
         element.dataset.filter || DEFAULT_FILTER,
         element.dataset.filterValue || "",
         parseInt(element.dataset.page || 0)
