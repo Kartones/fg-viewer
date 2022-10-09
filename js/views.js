@@ -25,6 +25,7 @@ import {
   fillTableRows,
   fillWishlistedGamesCountLiteral,
   fillPaginationBlock,
+  fillPaginationIndexes,
   filterGamesBy,
   paginate,
   sortGamesBy,
@@ -91,12 +92,13 @@ export function fillUserGamesTemplate(
       filter,
       filterValue
     ),
-    { pageNumber }
+    { pageNumber, useIndexes: true }
   );
 
   const operations = [
     fillCapitalizedUserName,
     fillBackButton,
+    (content) => fillPaginationIndexes(content, pagination.indexes),
     (content) => fillAbandonedColumn(content, autoExcludeAbandoned),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {

@@ -704,10 +704,24 @@ export function fillPaginationBlock(
   );
 }
 
+export function fillPaginationIndexes(content, indexes) {
+  const indexesHTML = Object.entries(indexes)
+    .map(
+      ([index, page]) =>
+        `<a up-emit="link:user-games" href="#" data-page="${page}">${
+          index === "0" ? "0-9" : index
+        }</a>`
+    )
+    .join(" - ");
+
+  return content.replace("{{js-pagination-indexes}}", indexesHTML);
+}
+
 export function paginate(items, options = {}) {
   options = {
     pageNumber: 0,
     pageSize: 100,
+    useIndexes: false,
     ...options,
   };
   let response = {
@@ -716,6 +730,7 @@ export function paginate(items, options = {}) {
     prev: null,
     next: null,
     total: 1,
+    indexes: {},
   };
 
   if (items.length === 0) {
@@ -725,6 +740,46 @@ export function paginate(items, options = {}) {
   options.pageSize = Math.min(Math.max(1, options.pageSize), items.length);
 
   response.total = Math.ceil(items.length / options.pageSize);
+
+  if (options.useIndexes) {
+    response.indexes = {
+      0: 0,
+      A: 0,
+      B: 0,
+      C: 0,
+      D: 0,
+      E: 0,
+      F: 0,
+      G: 0,
+      H: 0,
+      I: 0,
+      J: 0,
+      K: 0,
+      L: 0,
+      M: 0,
+      N: 0,
+      O: 0,
+      P: 0,
+      Q: 0,
+      R: 0,
+      S: 0,
+      T: 0,
+      U: 0,
+      V: 0,
+      W: 0,
+      X: 0,
+      Y: 0,
+      Z: 0,
+    };
+    Object.keys(response.indexes).forEach((index) => {
+      const position = items.findIndex((item) =>
+        appData.games[item.game_id].name.startsWith(index)
+      );
+      if (position > 0) {
+        response.indexes[index] = Math.floor(position / options.pageSize);
+      }
+    });
+  }
 
   options.pageNumber = Math.min(
     Math.max(0, options.pageNumber),
