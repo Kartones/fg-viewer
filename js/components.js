@@ -722,12 +722,21 @@ export function fillPaginationIndexes(content, indexes, options = {}) {
     ...options,
   };
 
+  const simpleLinkDestinations = [
+    "user-games",
+    "finished-games",
+    "currently-playing-games",
+    "pending-games",
+    "abandoned-games",
+    "wishlisted-games",
+  ];
+
   const indexesHTML = Object.entries(indexes)
     .map(([index, page]) => {
-      if (options.linkDestination === "user-games") {
-        return `<a up-emit="link:user-games" href="#" data-page="${page}">${
-          index === "0" ? "0-9" : index
-        }</a>`;
+      if (simpleLinkDestinations.includes(options.linkDestination)) {
+        return `<a up-emit="link:${
+          options.linkDestination
+        }" href="#" data-page="${page}">${index === "0" ? "0-9" : index}</a>`;
       } else if (options.linkDestination === "user-games-by-platform") {
         return linkToUserGamesByPlatform(options.platformId, options.from, {
           page,

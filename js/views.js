@@ -264,13 +264,18 @@ export function fillAbandonedGamesTemplate(
 
   const pagination = paginate(
     sortGamesBy(appData.user.games.abandoned(), filter, filterValue),
-    { pageNumber }
+    { pageNumber, useIndexes: true }
   );
 
   const operations = [
     fillCapitalizedUserName,
     fillAbandonedGamesCountLiteral,
     fillBackButton,
+    (content) =>
+      fillPaginationIndexes(content, pagination.indexes, {
+        linkDestination: "abandoned-games",
+        from,
+      }),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
@@ -310,13 +315,18 @@ export function fillCurrentlyPlayingGamesTemplate(
 
   const pagination = paginate(
     sortGamesBy(appData.user.games.currentlyPlaying(), filter, filterValue),
-    { pageNumber }
+    { pageNumber, useIndexes: true }
   );
 
   const operations = [
     fillCapitalizedUserName,
     fillCurrentlyPlayingGamesCountLiteral,
     fillBackButton,
+    (content) =>
+      fillPaginationIndexes(content, pagination.indexes, {
+        linkDestination: "currently-playing-games",
+        from,
+      }),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
@@ -358,13 +368,18 @@ export function fillPendingGamesTemplate(
 
   const pagination = paginate(
     sortGamesBy(appData.user.games.pending(), filter, filterValue),
-    { pageNumber }
+    { pageNumber, useIndexes: true }
   );
 
   const transformations = [
     fillCapitalizedUserName,
     fillPendingGamesCountLiteral,
     fillBackButton,
+    (content) =>
+      fillPaginationIndexes(content, pagination.indexes, {
+        linkDestination: "pending-games",
+        from,
+      }),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
@@ -404,13 +419,18 @@ export function fillFinishedGamesTemplate(
 
   const pagination = paginate(
     sortGamesBy(appData.user.games.finished(), filter, filterValue),
-    { pageNumber }
+    { pageNumber, useIndexes: true }
   );
 
   const transformations = [
     fillCapitalizedUserName,
     fillFinishedGamesCountLiteral,
     fillBackButton,
+    (content) =>
+      fillPaginationIndexes(content, pagination.indexes, {
+        linkDestination: "finished-games",
+        from,
+      }),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
@@ -450,13 +470,18 @@ export function fillWishlistedGamesTemplate(
 
   const pagination = paginate(
     sortGamesBy(appData.user.wishlistedGames.items, filter, filterValue),
-    { pageNumber }
+    { pageNumber, useIndexes: true }
   );
 
   const transformations = [
     fillCapitalizedUserName,
     fillWishlistedGamesCountLiteral,
     fillBackButton,
+    (content) =>
+      fillPaginationIndexes(content, pagination.indexes, {
+        linkDestination: "wishlisted-games",
+        from,
+      }),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
