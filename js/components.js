@@ -722,6 +722,10 @@ export function fillPaginationIndexes(content, indexes, options = {}) {
     ...options,
   };
 
+  if (typeof Object.values(indexes).find((page) => page > 0) === "undefined") {
+    return content.replace("{{js-pagination-indexes}}", "");
+  }
+
   const simpleLinkDestinations = [
     "user-games",
     "finished-games",
