@@ -157,11 +157,17 @@ export function fillUserGamesByPlatformTemplate(
       filter,
       filterValue
     ),
-    { pageNumber }
+    { pageNumber, useIndexes: true }
   );
 
   const operations = [
     fillCapitalizedUserName,
+    (content) =>
+      fillPaginationIndexes(content, pagination.indexes, {
+        linkDestination: "user-games-by-platform",
+        platformId,
+        from,
+      }),
     (content) => fillAbandonedColumn(content, autoExcludeAbandoned, true),
     (content) => fillPlatformName(content, platformId),
     (content) => fillGamesByPlatformCountLiteral(content, platformId),

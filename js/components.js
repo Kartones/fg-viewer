@@ -424,12 +424,10 @@ export function fillTableRows(
 
         if (columns.platformLongName) {
           row += `<td>
-          ${linkToUserGamesByPlatform(
-            platformId,
-            true,
-            sourceId,
-            options.gameId
-          )}
+          ${linkToUserGamesByPlatform(platformId, sourceId, {
+            useLongName: true,
+            fromId: options.gameId,
+          })}
           </td>`;
         }
 
@@ -457,7 +455,9 @@ export function fillTableRows(
         }
         if (columns.platformShortName) {
           row += `<td class="is-centered">
-          ${linkToUserGamesByPlatform(game.platform_id, false, sourceId)}
+          ${linkToUserGamesByPlatform(game.platform_id, sourceId, {
+            useLongName: false,
+          })}
           </td>`;
         }
         if (columns.gameStatusAll) {
@@ -486,18 +486,28 @@ function linkToGameDetails(gameId, from, fromId = null) {
   return `<a up-emit="link:game-details" data-id="${gameId}" data-from="${from}" ${fromIdFragment} href="#">${appData.games[gameId].name}</a>`;
 }
 
-function linkToUserGamesByPlatform(
-  platformId,
-  useLongName,
-  from,
-  fromId = null
-) {
-  const fromIdFragment = fromId ? `data-from-id="${fromId}"` : "";
-  const name = useLongName
+function linkToUserGamesByPlatform(platformId, from, options = {}) {
+  options = {
+    nameOverride: null,
+    useLongName: false,
+    fromId: null,
+    page: null,
+    ...options,
+  };
+
+  const fromIdFragment = options.fromId
+    ? `data-from-id="${options.fromId}"`
+    : "";
+
+  const pageFragment = options.page ? `data-page="${options.page}"` : "";
+
+  const name = options.nameOverride
+    ? options.nameOverride
+    : options.useLongName
     ? appData.platforms[platformId].name
     : appData.platforms[platformId].shortname;
 
-  return `<a up-emit="link:user-games-by-platform" data-id="${platformId}" data-from="${from}" ${fromIdFragment} href="#">${name}</a>`;
+  return `<a up-emit="link:user-games-by-platform" data-id="${platformId}" data-from="${from}" ${fromIdFragment} ${pageFragment} href="#">${name}</a>`;
 }
 
 export function filterGamesBy(games, field, value) {
@@ -704,14 +714,31 @@ export function fillPaginationBlock(
   );
 }
 
-export function fillPaginationIndexes(content, indexes) {
+export function fillPaginationIndexes(content, indexes, options = {}) {
+  options = {
+    linkDestination: "user-games",
+    platformId: null,
+    from: null,
+    ...options,
+  };
+
   const indexesHTML = Object.entries(indexes)
-    .map(
-      ([index, page]) =>
-        `<a up-emit="link:user-games" href="#" data-page="${page}">${
+    .map(([index, page]) => {
+      if (options.linkDestination === "user-games") {
+        return `<a up-emit="link:user-games" href="#" data-page="${page}">${
           index === "0" ? "0-9" : index
-        }</a>`
-    )
+        }</a>`;
+      } else if (options.linkDestination === "user-games-by-platform") {
+        return linkToUserGamesByPlatform(options.platformId, options.from, {
+          page,
+          nameOverride: index === "0" ? "0-9" : index,
+        });
+      } else {
+        throw new Error(
+          `Unknown fillPaginationIndexes link destination value '${options.linkDestination}'`
+        );
+      }
+    })
     .join(" - ");
 
   return content.replace("{{js-pagination-indexes}}", indexesHTML);
