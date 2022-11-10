@@ -79,11 +79,17 @@ export function fillGameURLs(content, gameId) {
     "StragegyWiki"
   ] = `https://strategywiki.org/w/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
 
-  // only for PC (platform 3)
   if (game.platforms.includes(3)) {
+    // only for PC
     gameUrls[
       "PCGamingWiki"
     ] = `https://www.pcgamingwiki.com/w/index.php?search=${urlEncodedName}&title=Special%3ASearch`;
+  }
+  if (game.platforms.includes(10)) {
+    // only for Playstation 2
+    gameUrls[
+      "PCSX2Wiki"
+    ] = `https://wiki.pcsx2.net/index.php?search=${urlEncodedName}&title=Special%3ASearch`;
   }
 
   return content.replaceAll(
