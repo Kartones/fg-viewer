@@ -24,6 +24,7 @@ import {
   fillCatalogGamesProgressBar,
   fillTableRows,
   fillWishlistedGamesCountLiteral,
+  fillRandomGame,
   fillPaginationBlock,
   fillPaginationIndexes,
   filterGamesBy,
@@ -526,6 +527,14 @@ export function fillCatalogTemplate() {
     fillCatalogGamesProgressBar,
     fillCatalogAutoExcludeCurrentValue,
   ];
+
+  return renderMarkup(sourceId, transformations);
+}
+
+export function fillRandomGameTemplate() {
+  const sourceId = "random-game";
+
+  const transformations = [fillBackButton, fillRandomGame];
 
   return renderMarkup(sourceId, transformations);
 }

@@ -516,6 +516,16 @@ function linkToUserGamesByPlatform(platformId, from, options = {}) {
   return `<a up-emit="link:user-games-by-platform" data-id="${platformId}" data-from="${from}" ${fromIdFragment} ${pageFragment} href="#">${name}</a>`;
 }
 
+export function fillRandomGame(content) {
+  const gameIds = Object.keys(appData.games);
+  const numGames = gameIds.length;
+  const chosenGameIndex = Math.floor(Math.random() * (numGames + 1));
+
+  const replacement = appData.games[gameIds[chosenGameIndex]].name;
+
+  return content.replace("{{js-random-game}}", replacement);
+}
+
 export function filterGamesBy(games, field, value) {
   if (field !== "abandoned") {
     throw new Error(`Filter "${field} not supported`);

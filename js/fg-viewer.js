@@ -12,6 +12,7 @@ import {
   fillUserGamesTemplate,
   fillUserGamesByPlatformTemplate,
   fillUserPlatformsTemplate,
+  fillRandomGameTemplate,
 } from "./views.js";
 import { sortGamesBy, sortPlatformsBy } from "./components.js";
 import { DEFAULT_FILTER, DEFAULT_SOURCE_ID } from "./enums.js";
@@ -74,6 +75,7 @@ window.appData = null;
           fetch("templates/user_games.html"),
           fetch("templates/user_games_by_platform.html"),
           fetch("templates/user_platforms.html"),
+          fetch("templates/random_game.html"),
         ]).then((responses) => {
           return Promise.all(
             responses.map(async (response) => {
@@ -246,6 +248,15 @@ window.appData = null;
         element.dataset.filterValue || ""
       ),
       transition: event.transition || "move-left",
+      scroll: "main",
+    });
+    event.preventDefault();
+  });
+
+  up.on("link:random-game", (event) => {
+    up.render("section.main-container", {
+      fragment: fillRandomGameTemplate(),
+      transition: event.transition,
       scroll: "main",
     });
     event.preventDefault();
