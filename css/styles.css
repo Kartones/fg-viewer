@@ -171,9 +171,13 @@ span.dir {
 }
 
 .select {
-    margin-bottom: 64px;
+    margin-bottom: 30px;
 }
 
 .nice-select {
     min-width: 300px;
+}
+
+summary {
+    color: #0060c6;
 }

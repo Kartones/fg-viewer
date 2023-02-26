@@ -191,7 +191,7 @@ window.appData = null;
       fragment: fillGameDetailsTemplate(
         parseInt(element.dataset?.id) || parseInt(event.gameId),
         element.dataset?.from || event.from || DEFAULT_SOURCE_ID,
-        parseInt(element.dataset?.fromId) || ""
+        parseInt(element.dataset?.fromId) || parseInt(event.fromId) || ""
       ),
       transition: event.transition || "move-left",
       scroll: "main",
@@ -287,10 +287,16 @@ window.appData = null;
       searchBox.update();
 
       searchSelectelement.addEventListener("change", (event) => {
+        const searchSelectelement = document.getElementById("gameSearch");
+
         const value = parseInt(event.target.value, 10);
         if (value !== -1) {
           cleanSearchBox();
-          up.emit("link:game-details", { gameId: value, from: "user-games" });
+          up.emit("link:game-details", {
+            gameId: value,
+            from: searchSelectelement.dataset["from"],
+            fromId: searchSelectelement.dataset["fromId"],
+          });
         }
       });
     }
@@ -302,12 +308,16 @@ window.appData = null;
     }
   });
 
-  up.on("feedback:error", () => {
+  up.on("feedback:error", function (event) {
+    let message = event.message;
+    if (!message) {
+      message =
+        "There was an error loading the data. <br/>Please reload the page or try again later.";
+    }
+
     up.render("#feedback", {
       fragment: `<div id="feedback" class="nes-balloon from-right">
-            <span class="feedback-error">
-                There was an error loading the data. <br/>Please reload the page or try again later.
-            </span>
+            <span class="feedback-error">${message}</span>
         </div>`,
     });
   });

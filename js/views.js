@@ -101,7 +101,7 @@ export function fillUserGamesTemplate(
     fillCapitalizedUserName,
     fillBackButton,
     (content) => fillPaginationIndexes(content, pagination.indexes),
-    (content) => fillSearchComponent(content),
+    (content) => fillSearchComponent(content, sourceId),
     (content) => fillAbandonedColumn(content, autoExcludeAbandoned),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
@@ -165,6 +165,7 @@ export function fillUserGamesByPlatformTemplate(
 
   const operations = [
     fillCapitalizedUserName,
+    (content) => fillSearchComponent(content, sourceId, platformId),
     (content) =>
       fillPaginationIndexes(content, pagination.indexes, {
         linkDestination: "user-games-by-platform",
@@ -274,6 +275,7 @@ export function fillAbandonedGamesTemplate(
     fillCapitalizedUserName,
     fillAbandonedGamesCountLiteral,
     fillBackButton,
+    (content) => fillSearchComponent(content, sourceId),
     (content) =>
       fillPaginationIndexes(content, pagination.indexes, {
         linkDestination: "abandoned-games",
@@ -325,6 +327,7 @@ export function fillCurrentlyPlayingGamesTemplate(
     fillCapitalizedUserName,
     fillCurrentlyPlayingGamesCountLiteral,
     fillBackButton,
+    (content) => fillSearchComponent(content, sourceId),
     (content) =>
       fillPaginationIndexes(content, pagination.indexes, {
         linkDestination: "currently-playing-games",
@@ -378,6 +381,7 @@ export function fillPendingGamesTemplate(
     fillCapitalizedUserName,
     fillPendingGamesCountLiteral,
     fillBackButton,
+    (content) => fillSearchComponent(content, sourceId),
     (content) =>
       fillPaginationIndexes(content, pagination.indexes, {
         linkDestination: "pending-games",
@@ -429,6 +433,7 @@ export function fillFinishedGamesTemplate(
     fillCapitalizedUserName,
     fillFinishedGamesCountLiteral,
     fillBackButton,
+    (content) => fillSearchComponent(content, sourceId),
     (content) =>
       fillPaginationIndexes(content, pagination.indexes, {
         linkDestination: "finished-games",
@@ -480,6 +485,7 @@ export function fillWishlistedGamesTemplate(
     fillCapitalizedUserName,
     fillWishlistedGamesCountLiteral,
     fillBackButton,
+    (content) => fillSearchComponent(content, sourceId),
     (content) =>
       fillPaginationIndexes(content, pagination.indexes, {
         linkDestination: "wishlisted-games",

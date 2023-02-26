@@ -29,15 +29,67 @@ function titleSuffixOf(desiredFilter, currentfilter, currentState) {
   }
 }
 
-export function fillSearchComponent(content) {
-  return content.replaceAll(
+export function fillSearchComponent(content, from, fromId = null) {
+  const autoExcludeAbandoned = appData.preferences.shouldAutoExclude();
+
+  const filter = "name";
+
+  let games;
+  switch (from) {
+    case "currently-playing-games":
+      games = sortGamesBy(appData.user.games.currentlyPlaying(), filter);
+      break;
+    case "user-games":
+      games = sortGamesBy(
+        filterGamesBy(
+          appData.user.games.items,
+          "abandoned",
+          autoExcludeAbandoned
+        ),
+        filter
+      );
+      break;
+    case "finished-games":
+      games = sortGamesBy(appData.user.games.finished(), filter);
+      break;
+    case "pending-games":
+      games = sortGamesBy(appData.user.games.pending(), filter);
+      break;
+    case "wishlisted-games":
+      games = sortGamesBy(appData.user.wishlistedGames.items, filter);
+      break;
+    case "abandoned-games":
+      games = sortGamesBy(appData.user.games.abandoned(), filter);
+      break;
+    case "user-games-by-platform":
+      games = sortGamesBy(
+        filterGamesBy(
+          appData.user.games.byPlatform(fromId),
+          "abandoned",
+          autoExcludeAbandoned
+        ),
+        filter
+      );
+      break;
+    default:
+      up.emit("feedback:error", { message: "Error populating the search box" });
+      console.error("Unrecognized 'from' value: ", from);
+      games = [];
+  }
+
+  return content.replace(
     "{{js-game-search}}",
-    `<select id="gameSearch">
+    `<div class="select"><select id="gameSearch" data-from="${from}" data-from-id="${fromId}">
     <option value="-1"> </option>
-    ${Object.values(appData.games)
-      .map((game) => `<option value="${game.id}">${game.name}</option>`)
+    ${games
+      .map(
+        (userGame) =>
+          `<option value="${userGame.game_id}">${
+            appData.games[userGame.game_id].name
+          }</option>`
+      )
       .join("")}
-    </select>`
+    </select></div>`
   );
 }
 
@@ -750,6 +802,7 @@ export function fillPaginationIndexes(content, indexes, options = {}) {
     ...options,
   };
 
+  // If not paginated (a single page), don't show anything
   if (typeof Object.values(indexes).find((page) => page > 0) === "undefined") {
     return content.replace("{{js-pagination-indexes}}", "");
   }
@@ -782,7 +835,12 @@ export function fillPaginationIndexes(content, indexes, options = {}) {
     })
     .join(" - ");
 
-  return content.replace("{{js-pagination-indexes}}", indexesHTML);
+  const finalHTML = `<details>
+    <summary>Navigation options</summary>
+    <p class="character-filter">${indexesHTML}</p>
+    </details>`;
+
+  return content.replace("{{js-pagination-indexes}}", finalHTML);
 }
 
 export function paginate(items, options = {}) {
