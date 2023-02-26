@@ -99,16 +99,6 @@ window.appData = null;
 
   up.compiler("#content", () => readData());
 
-  up.on("feedback:error", () => {
-    up.render("#feedback", {
-      fragment: `<div id="feedback" class="nes-balloon from-right">
-            <span class="feedback-error">
-                There was an error loading the data. <br/>Please reload the page or try again later.
-            </span>
-        </div>`,
-    });
-  });
-
   up.on("link:catalog", (event, _element) => {
     event.transition ||= "move-right";
 
@@ -196,11 +186,12 @@ window.appData = null;
   });
 
   up.on("link:game-details", (event, element) => {
+    // special case, when emitted from the game search data comes at event, instead of from element
     up.render("section.main-container", {
       fragment: fillGameDetailsTemplate(
-        parseInt(element.dataset.id),
-        element.dataset.from || DEFAULT_SOURCE_ID,
-        parseInt(element.dataset.fromId) || ""
+        parseInt(element.dataset?.id) || parseInt(event.gameId),
+        element.dataset?.from || event.from || DEFAULT_SOURCE_ID,
+        parseInt(element.dataset?.fromId) || ""
       ),
       transition: event.transition || "move-left",
       scroll: "main",
@@ -221,6 +212,7 @@ window.appData = null;
       transition: event.transition || "move-left",
       scroll: "main",
     });
+
     event.preventDefault();
   });
 
@@ -261,4 +253,72 @@ window.appData = null;
     });
     event.preventDefault();
   });
+
+  // other events
+
+  up.on("up:click", function (event) {
+    // special cases to do cleaning (select items)
+    //  div class="select"
+    //  span class="current"
+    //  div class="nice-select"
+    //  li class="option"
+    if (!["DIV", "LI", "SPAN"].includes(event.target.tagName)) {
+      cleanSearchBox();
+    } else {
+      if (
+        !["select", "nice-select", "option", "current"].some((cls) =>
+          event.target.classList.contains(cls)
+        )
+      ) {
+        cleanSearchBox();
+      }
+    }
+  });
+
+  up.on("up:fragment:inserted", function (_event, fragment) {
+    if (fragment.innerHTML.includes('select id="gameSearch"')) {
+      const searchSelectelement = document.getElementById("gameSearch");
+
+      const searchBox = NiceSelect.bind(searchSelectelement, {
+        searchable: true,
+        placeholder: "Type to search",
+        searchtext: "Type to search",
+      });
+      searchBox.update();
+
+      searchSelectelement.addEventListener("change", (event) => {
+        const value = parseInt(event.target.value, 10);
+        if (value !== -1) {
+          cleanSearchBox();
+          up.emit("link:game-details", { gameId: value, from: "user-games" });
+        }
+      });
+    }
+  });
+
+  up.on("up:fragment:destroyed", function (_event, fragment) {
+    if (fragment.innerHTML.includes('select id="gameSearch"')) {
+      cleanSearchBox();
+    }
+  });
+
+  up.on("feedback:error", () => {
+    up.render("#feedback", {
+      fragment: `<div id="feedback" class="nes-balloon from-right">
+            <span class="feedback-error">
+                There was an error loading the data. <br/>Please reload the page or try again later.
+            </span>
+        </div>`,
+    });
+  });
+
+  // helpers
+
+  const cleanSearchBox = () => {
+    const searchSelectelement = document.getElementById("gameSearch");
+    if (searchSelectelement) {
+      const searchBox = NiceSelect.bind(searchSelectelement);
+      searchBox.destroy();
+    }
+  };
 })();

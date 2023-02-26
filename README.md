@@ -35,7 +35,6 @@ For production you don't need anything other than a web server (e.g. [`nginx`](h
 
 When all the following items are ready, an initial version (with `unpoly`) could be considered as done, and we'd go into a second phase of rewriting the code with `React` or similar.
 
-- add a searchable name filter component to all game listings
 - self-serve font
 - if at home, don't transition/navigate (using https://unpoly.com/up.history ?)
 - try activating navigation upon rendering (https://unpoly.com/up.render)
