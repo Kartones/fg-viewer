@@ -469,6 +469,7 @@ export function fillTableRows(
     ...{
       platformLongName: false,
       platformShortName: false,
+      platformGameStatusAll: false,
       gameName: false,
       gameStatusAll: false,
       gameStatusCurrentlyPlaying: false,
@@ -481,6 +482,7 @@ export function fillTableRows(
       isPlatformsList: false,
       fromPlatformId: null,
       gameId: null,
+      userGames: null,
     },
     ...options,
   };
@@ -490,7 +492,13 @@ export function fillTableRows(
   if (options.isPlatformsList) {
     itemsFragment = items
       .map((platformId) => {
-        let row = "<tr>";
+        const userGame = options.userGames.find(
+          (userGame) => userGame.platform_id === platformId
+        );
+
+        let row = `<tr ${
+          userGame && userGame.finished ? 'class="row-finished"' : ""
+        }>`;
 
         if (columns.platformLongName) {
           row += `<td>
@@ -499,6 +507,38 @@ export function fillTableRows(
             fromId: options.gameId,
           })}
           </td>`;
+        }
+
+        if (!userGame) {
+          row += "<td></td><td></td><td></td><td></td><td></td>";
+        } else {
+          row += `
+          <td>${
+            !userGame.finished && !userGame.wishlisted && !userGame.abandoned
+              ? '<i class="nes-icon trophy is-empty" title="Pending"></i>'
+              : ""
+          }</td>
+          <td>${
+            userGame.currently_playing
+              ? '<i class="nes-icon snes-pad" title="Currently playing"></i>'
+              : ""
+          }</td>
+          <td>${
+            userGame.finished
+              ? '<i class="nes-icon trophy" title="Finished"></i>'
+              : ""
+          }</td>
+          <td>${
+            userGame.abandoned
+              ? '<i class="nes-icon skull" title="Abandoned"></i>'
+              : ""
+          }</td>
+          <td>${
+            userGame.wishlisted
+              ? '<i class="nes-icon heart" title="Wishlisted"></i>'
+              : ""
+          }</td>
+          `;
         }
 
         row += "</tr>";
@@ -591,14 +631,17 @@ export function fillRandomGame(content) {
 }
 
 export function filterGamesBy(games, field, value) {
-  if (field !== "abandoned") {
-    throw new Error(`Filter "${field} not supported`);
+  switch (field) {
+    case "abandoned":
+      if (value !== true) {
+        return games;
+      }
+      return games.filter((game) => !game.abandoned);
+    case "game_id":
+      return games.filter((game) => game.game_id === value);
+    default:
+      throw new Error(`Filter "${field} not supported`);
   }
-
-  if (value !== true) {
-    return games;
-  }
-  return games.filter((game) => !game.abandoned);
 }
 
 // Used both for user games and wishlisted games

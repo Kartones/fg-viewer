@@ -233,6 +233,30 @@ export function fillGameDetailsTemplate(gameId, from, fromId) {
     "name"
   );
 
+  const userGames = filterGamesBy(
+    appData.user.games.items,
+    "game_id",
+    gameId
+  ).map((game) => ({
+    platform_id: game.platform_id,
+    finished: game.finished,
+    currently_playing: game.currently_playing,
+    abandoned: game.abandoned,
+    wishlisted: false,
+  }));
+
+  const userWishlistedGames = filterGamesBy(
+    appData.user.wishlistedGames.items,
+    "game_id",
+    gameId
+  ).map((game) => ({
+    platform_id: game.platform_id,
+    finished: false,
+    currently_playing: false,
+    abandoned: false,
+    wishlisted: true,
+  }));
+
   const operations = [
     (content) =>
       fillTableRows(
@@ -241,10 +265,12 @@ export function fillGameDetailsTemplate(gameId, from, fromId) {
         sourceId,
         {
           platformLongName: true,
+          platformGameStatusAll: true,
         },
         {
           isPlatformsList: true,
           gameId,
+          userGames: userGames.concat(userWishlistedGames),
         }
       ),
     (content) => fillGameName(content, gameId),
