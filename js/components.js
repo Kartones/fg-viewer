@@ -41,11 +41,10 @@ export function fillSearchComponent(content, from, fromId = null) {
       break;
     case "user-games":
       games = sortGamesBy(
-        filterGamesBy(
-          appData.user.games.items,
-          "abandoned",
-          autoExcludeAbandoned
-        ),
+        Object.values(appData.games).map((game) => ({
+          game_id: game.id,
+          name: game.name,
+        })),
         filter
       );
       break;
@@ -492,13 +491,18 @@ export function fillTableRows(
   if (options.isPlatformsList) {
     itemsFragment = items
       .map((platformId) => {
-        const userGame = options.userGames.find(
-          (userGame) => userGame.platform_id === platformId
-        );
+        let userGame;
+        let row = "<tr>";
 
-        let row = `<tr ${
-          userGame && userGame.finished ? 'class="row-finished"' : ""
-        }>`;
+        if (columns.platformGameStatusAll) {
+          userGame = options.userGames?.find(
+            (userGame) => userGame.platform_id === platformId
+          );
+
+          row = `<tr ${
+            userGame && userGame.finished ? 'class="row-finished"' : ""
+          }>`;
+        }
 
         if (columns.platformLongName) {
           row += `<td>
@@ -509,36 +513,38 @@ export function fillTableRows(
           </td>`;
         }
 
-        if (!userGame) {
-          row += "<td></td><td></td><td></td><td></td><td></td>";
-        } else {
-          row += `
-          <td>${
-            !userGame.finished && !userGame.wishlisted && !userGame.abandoned
-              ? '<i class="nes-icon trophy is-empty" title="Pending"></i>'
-              : ""
-          }</td>
-          <td>${
-            userGame.currently_playing
-              ? '<i class="nes-icon snes-pad" title="Currently playing"></i>'
-              : ""
-          }</td>
-          <td>${
-            userGame.finished
-              ? '<i class="nes-icon trophy" title="Finished"></i>'
-              : ""
-          }</td>
-          <td>${
-            userGame.abandoned
-              ? '<i class="nes-icon skull" title="Abandoned"></i>'
-              : ""
-          }</td>
-          <td>${
-            userGame.wishlisted
-              ? '<i class="nes-icon heart" title="Wishlisted"></i>'
-              : ""
-          }</td>
-          `;
+        if (columns.platformGameStatusAll) {
+          if (!userGame) {
+            row += "<td></td><td></td><td></td><td></td><td></td>";
+          } else {
+            row += `
+            <td>${
+              !userGame.finished && !userGame.wishlisted && !userGame.abandoned
+                ? '<i class="nes-icon trophy is-empty" title="Pending"></i>'
+                : ""
+            }</td>
+            <td>${
+              userGame.currently_playing
+                ? '<i class="nes-icon snes-pad" title="Currently playing"></i>'
+                : ""
+            }</td>
+            <td>${
+              userGame.finished
+                ? '<i class="nes-icon trophy" title="Finished"></i>'
+                : ""
+            }</td>
+            <td>${
+              userGame.abandoned
+                ? '<i class="nes-icon skull" title="Abandoned"></i>'
+                : ""
+            }</td>
+            <td>${
+              userGame.wishlisted
+                ? '<i class="nes-icon heart" title="Wishlisted"></i>'
+                : ""
+            }</td>
+            `;
+          }
         }
 
         row += "</tr>";
