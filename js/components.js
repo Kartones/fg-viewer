@@ -76,17 +76,21 @@ export function fillSearchComponent(content, from, fromId = null) {
       games = [];
   }
 
+  let gamesMap = games.reduce((accumulator, currentValue) => {
+    return accumulator.set(
+      currentValue.game_id,
+      appData.games[currentValue.game_id].name
+    );
+  }, new Map());
+
+  games = Array.from(gamesMap, ([id, name]) => ({ id, name }));
+
   return content.replace(
     "{{js-game-search}}",
     `<div class="select"><select id="gameSearch" data-from="${from}" data-from-id="${fromId}">
     <option value="-1"> </option>
     ${games
-      .map(
-        (userGame) =>
-          `<option value="${userGame.game_id}">${
-            appData.games[userGame.game_id].name
-          }</option>`
-      )
+      .map((game) => `<option value="${game.id}">${game.name}</option>`)
       .join("")}
     </select></div>`
   );
