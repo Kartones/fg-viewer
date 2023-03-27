@@ -146,6 +146,10 @@ export function fillGameURLs(content, gameId) {
     "StragegyWiki"
   ] = `https://strategywiki.org/w/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
 
+  gameUrls[
+    "Before I Play"
+  ] = `https://beforeiplay.com/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
+
   if (game.platforms.includes(3)) {
     // only for PC
     gameUrls[
