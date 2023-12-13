@@ -156,6 +156,12 @@ class User {
 }
 
 class UserPreferences {
+  #show_catalog_header;
+
+  get showCatalogHeader() {
+    return this.#show_catalog_header;
+  }
+
   shouldAutoExclude() {
     return (
       decodeURIComponent(document.cookie)
@@ -169,6 +175,10 @@ class UserPreferences {
     // 1 year when setting
     const expiration = this.shouldAutoExclude() ? -1 : 31536000;
     document.cookie = `auto_exclude=abandoned;max-age=${expiration};path=/; SameSite=None; Secure`;
+  }
+
+  constructor(userPreferences) {
+    this.#show_catalog_header = userPreferences.show_catalog_header;
   }
 }
 
@@ -221,7 +231,7 @@ export class AppData {
     return this.#preferences;
   }
 
-  constructor(userData, gamesData, platformsData) {
+  constructor(userData, gamesData, platformsData, userPreferences) {
     this.#user = new User(userData);
     this.#games = Object.assign(
       {},
@@ -240,6 +250,6 @@ export class AppData {
       })
     );
     this.#templates = {};
-    this.#preferences = new UserPreferences();
+    this.#preferences = new UserPreferences(userPreferences);
   }
 }

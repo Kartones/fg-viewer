@@ -27,12 +27,14 @@ window.appData = null;
       fetch(`data/user.json?v=${timestampMark}`),
       fetch(`data/games.json?v=${timestampMark}`),
       fetch(`data/platforms.json?v=${timestampMark}`),
+      fetch(`data/prefs.json?v=${timestampMark}`),
     ])
-      .then(async ([userData, gamesData, platformsData]) => {
+      .then(async ([userData, gamesData, platformsData, userPrefs]) => {
         const user = await userData.json();
         const games = await gamesData.json();
         const platforms = await platformsData.json();
-        appData = new AppData(user, games, platforms);
+        const userPreferences = await userPrefs.json();
+        appData = new AppData(user, games, platforms, userPreferences);
       })
       .then(() =>
         Promise.all([

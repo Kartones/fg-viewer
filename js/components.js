@@ -378,6 +378,16 @@ export function fillCapitalizedUserName(content) {
   );
 }
 
+export function fillOptionalCatalogHeader(content) {
+  let replacement = "";
+
+  if (appData.preferences.showCatalogHeader) {
+    replacement = fillCapitalizedUserName(`<h2>{{js-username}} Catalog</h2>`);
+  }
+
+  return content.replace("{{js-optional-catalog-header}}", replacement);
+}
+
 export function fillBackButton(content, from = "catalog", id = null) {
   const idFragment = id ? `data-id="${id}"` : "";
 

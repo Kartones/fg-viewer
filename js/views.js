@@ -10,6 +10,7 @@ import {
   fillCatalogGamesCount,
   fillCatalogGamesProgressBar,
   fillCatalogPlatformsCount,
+  fillOptionalCatalogHeader,
   fillDataFields,
   fillGameDLCBlock,
   fillGameName,
@@ -560,6 +561,7 @@ export function fillCatalogTemplate() {
     fillWishlistedGamesCountLiteral,
     fillCatalogGamesProgressBar,
     fillCatalogAutoExcludeCurrentValue,
+    fillOptionalCatalogHeader,
   ];
 
   return renderMarkup(sourceId, transformations);
