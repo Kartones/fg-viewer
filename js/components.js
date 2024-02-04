@@ -76,6 +76,11 @@ export function fillSearchComponent(content, from, fromId = null) {
       games = [];
   }
 
+  // Too few games, return early and don't show the search box
+  if (games.length < 15) {
+    return content.replace("{{js-game-search}}", "");
+  }
+
   let gamesMap = games.reduce((accumulator, currentValue) => {
     return accumulator.set(
       currentValue.game_id,
