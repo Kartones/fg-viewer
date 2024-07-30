@@ -7,7 +7,7 @@
   "license": "unlicense",
   "private": true,
   "devDependencies": {
-    "@babel/preset-env": "7.25.0",
+    "@babel/preset-env": "7.25.2",
     "babel-jest": "29.7.0",
     "http-server": "14.1.1",
     "jest": "29.7.0"
