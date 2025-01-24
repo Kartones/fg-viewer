@@ -7,6 +7,7 @@ import {
   fillCurrentlyPlayingGamesTemplate,
   fillPendingGamesTemplate,
   fillFinishedGamesTemplate,
+  fillFinishedGamesByYearTemplate,
   fillWishlistedGamesTemplate,
   fillCatalogTemplate,
   fillUserGamesTemplate,
@@ -73,6 +74,7 @@ window.appData = null;
           fetch("templates/currently_playing_games.html"),
           fetch("templates/pending_games.html"),
           fetch("templates/finished_games.html"),
+          fetch("templates/finished_games_by_year.html"),
           fetch("templates/wishlisted_games.html"),
           fetch("templates/user_games.html"),
           fetch("templates/user_games_by_platform.html"),
@@ -160,6 +162,24 @@ window.appData = null;
   up.on("link:finished-games", (event, element) => {
     up.render("section.main-container", {
       fragment: fillFinishedGamesTemplate(
+        element.dataset.from || DEFAULT_SOURCE_ID,
+        parseInt(element.dataset.fromId) || "",
+        element.dataset.filter || DEFAULT_FILTER,
+        element.dataset.filterValue || "",
+        parseInt(element.dataset.page || 0)
+      ),
+      transition: event.transition || "move-left",
+      scroll: "main",
+    });
+    event.preventDefault();
+  });
+
+  up.on("link:finished-games-by-year", (event, element) => {
+    const year = parseInt(element.dataset.id) || new Date().getFullYear();
+
+    up.render("section.main-container", {
+      fragment: fillFinishedGamesByYearTemplate(
+        year,
         element.dataset.from || DEFAULT_SOURCE_ID,
         parseInt(element.dataset.fromId) || "",
         element.dataset.filter || DEFAULT_FILTER,

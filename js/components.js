@@ -29,6 +29,24 @@ function titleSuffixOf(desiredFilter, currentfilter, currentState) {
   }
 }
 
+export function fillYearSelectorComponent(content) {
+  const years = appData.user.games.yearsWithFinishedGames();
+
+  const yearsHTML = years
+    .map(
+      (year) =>
+        `<a up-emit="link:finished-games-by-year" href="#" data-id="${year}">${year}</a>`
+    )
+    .join(" - ");
+
+  const finalHTML = `<details>
+    <summary>Navigation options</summary>
+    <p class="character-filter">${yearsHTML}</p>
+    </details>`;
+
+  return content.replace("{{js-year-selector}}", finalHTML);
+}
+
 export function fillSearchComponent(content, from, fromId = null) {
   const autoExcludeAbandoned = appData.preferences.shouldAutoExclude();
 
@@ -106,6 +124,10 @@ export function fillPlatformName(content, platformId) {
     "{{js-platform-name}}",
     appData.platforms[platformId].name
   );
+}
+
+export function fillYear(content, year) {
+  return content.replaceAll("{{js-year}}", year);
 }
 
 export function fillGameName(content, gameId) {
@@ -306,6 +328,17 @@ export function fillAbandonedGamesCountLiteral(content, platformId = null) {
   return content.replaceAll(
     "{{js-abandoned-games-count}}",
     `<strong>${items.length}</strong> abandoned ${pluralize("game", items)}`
+  );
+}
+
+export function fillFinishedGamesByYearCountLiteral(content, year) {
+  const items = appData.user.games.finishedByYear(year);
+  return content.replaceAll(
+    "{{js-finished-games-by-year-count}}",
+    `<strong>${items.length}</strong> finished ${pluralize(
+      "game",
+      items
+    )} in ${year}`
   );
 }
 
@@ -824,13 +857,13 @@ export function fillPaginationBlock(
   fromId,
   filter,
   filterValue,
-  platformId = null
+  id = null
 ) {
   if (pagination.total === 1) {
     return content.replace("{{js-pagination}}", "");
   }
 
-  const dataId = platformId ? `data-id="${platformId}"` : "";
+  const dataId = id ? `data-id="${id}"` : "";
 
   return content.replace(
     "{{js-pagination}}",
@@ -882,6 +915,7 @@ export function fillPaginationIndexes(content, indexes, options = {}) {
   const simpleLinkDestinations = [
     "user-games",
     "finished-games",
+    "finished-games-by-year",
     "currently-playing-games",
     "pending-games",
     "abandoned-games",

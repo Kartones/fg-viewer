@@ -1,3 +1,5 @@
 /data/*.json
 !/data/prefs.json
 /node_modules
+pnpm-lock.yaml
+.DS_Store

@@ -17,12 +17,14 @@ import {
   fillGamePublishDate,
   fillGameURLs,
   fillCurrentlyPlayingGamesCountLiteral,
+  fillFinishedGamesByYearCountLiteral,
   fillFinishedGamesCountLiteral,
   fillGamesByPlatformCompletedPercent,
   fillGamesByPlatformCountLiteral,
   fillGamesByPlatformProgressBar,
   fillPaginationBlock,
   fillPendingGamesCountLiteral,
+  fillYear,
   fillPlatformName,
   fillSearchComponent,
   fillTableRows,
@@ -30,6 +32,7 @@ import {
   fillRandomGame,
   fillPaginationIndexes,
   filterGamesBy,
+  fillYearSelectorComponent,
   paginate,
   sortGamesBy,
   sortPlatformsBy,
@@ -428,6 +431,56 @@ export function fillPendingGamesTemplate(
         fromId,
         filter,
         filterValue
+      ),
+    (content) =>
+      fillDataFields(
+        content,
+        {
+          platformFilter: true,
+        },
+        { from, fromId, filter, filterValue }
+      ),
+  ];
+
+  return renderMarkup(sourceId, transformations);
+}
+
+export function fillFinishedGamesByYearTemplate(
+  year,
+  from,
+  fromId,
+  filter,
+  filterValue,
+  pageNumber
+) {
+  let sourceId = "finished-games-by-year";
+
+  const pagination = paginate(
+    sortGamesBy(appData.user.games.finishedByYear(year), filter, filterValue),
+    { pageNumber }
+  );
+
+  const transformations = [
+    fillCapitalizedUserName,
+    fillBackButton,
+    (content) => fillFinishedGamesByYearCountLiteral(content, year),
+    (content) => fillYear(content, year),
+    (content) => fillYearSelectorComponent(content),
+    (content) =>
+      fillTableRows(content, pagination.items, sourceId, {
+        gameName: true,
+        platformShortName: true,
+      }),
+    (content) =>
+      fillPaginationBlock(
+        content,
+        pagination,
+        sourceId,
+        from,
+        fromId,
+        filter,
+        filterValue,
+        year
       ),
     (content) =>
       fillDataFields(

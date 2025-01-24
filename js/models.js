@@ -27,6 +27,19 @@ class UserGames {
     return this.byPlatform(platformId).filter((game) => game.finished);
   }
 
+  finishedByYear(year) {
+    return this.items.filter(
+      (game) => game.finished && game.year_finished === year
+    );
+  }
+
+  yearsWithFinishedGames() {
+    // newest first
+    return Array.from(
+      new Set(this.finished().map((game) => game.year_finished))
+    ).sort((a, b) => b - a);
+  }
+
   pending() {
     return this.items.filter((game) => !(game.finished || game.abandoned));
   }
@@ -186,8 +199,6 @@ export class AppData {
   #games;
   #platforms;
   #user;
-  #userGames;
-  #userWishlistedGames;
   #templates;
   #preferences;
 
@@ -201,26 +212,6 @@ export class AppData {
 
   get platforms() {
     return this.#platforms;
-  }
-
-  get userGames() {
-    return this.#userGames;
-  }
-
-  set userGames(userGamesData) {
-    this.#userGames = userGamesData;
-  }
-
-  get userWishlistedGames() {
-    return this.#userWishlistedGames;
-  }
-
-  userWishlistedGamesCount() {
-    return this.userWishlistedGames.length;
-  }
-
-  set userWishlistedGames(userWishlistedGamesData) {
-    this.#userWishlistedGames = userWishlistedGamesData;
   }
 
   get templates() {
