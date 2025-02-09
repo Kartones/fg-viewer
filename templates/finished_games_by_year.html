@@ -14,6 +14,10 @@
                   <th>
                     <a up-emit="link:finished-games" up-emit-props='{"transition":"cross-fade" }' data-filter="platform" data-filter-value="{{js-platform-filter-value}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#">Platform{{js-platform-filter-title-suffix}}</a>
                   </th>
+                  <th>
+                    <a up-emit="link:user-games" up-emit-props='{"transition":"cross-fade" }' data-filter="finished" data-filter-value="{{js-finished-filter-value}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#"><i class="nes-icon trophy" title="Finished"></i>{{js-finished-filter-title-suffix}}</a>
+                  </th>
+                  {{js-abandoned-column}}
               </tr>
           </thead>
           <tbody>

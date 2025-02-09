@@ -30,7 +30,7 @@ function titleSuffixOf(desiredFilter, currentfilter, currentState) {
 }
 
 export function fillYearSelectorComponent(content) {
-  const years = appData.user.games.yearsWithFinishedGames();
+  const years = appData.user.games.yearsWithFinishedOrAbandonedGames();
 
   const yearsHTML = years
     .map(
@@ -528,6 +528,7 @@ export function fillTableRows(
       gameName: false,
       gameStatusAll: false,
       gameStatusCurrentlyPlaying: false,
+      gameStatusAbandoned: false,
       gameStatusFinished: false,
     },
     ...columns,
@@ -638,7 +639,7 @@ export function fillTableRows(
           row += getGameStatusRow(game, {
             currentlyPlaying: columns.gameStatusCurrentlyPlaying,
             finished: columns.gameStatusFinished,
-            abandoned: false,
+            abandoned: columns.gameStatusAbandoned,
           });
         }
 

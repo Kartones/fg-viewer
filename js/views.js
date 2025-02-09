@@ -455,21 +455,31 @@ export function fillFinishedGamesByYearTemplate(
 ) {
   let sourceId = "finished-games-by-year";
 
+  const autoExcludeAbandoned = appData.preferences.shouldAutoExclude();
+
   const pagination = paginate(
-    sortGamesBy(appData.user.games.finishedByYear(year), filter, filterValue),
-    { pageNumber }
+    sortGamesBy(
+      appData.user.games.finishedByYear(year, autoExcludeAbandoned),
+      filter,
+      filterValue
+    ),
+    { pageNumber, useIndexes: true }
   );
 
   const transformations = [
     fillCapitalizedUserName,
     fillBackButton,
+    (content) => fillPaginationIndexes(content, pagination.indexes),
     (content) => fillFinishedGamesByYearCountLiteral(content, year),
     (content) => fillYear(content, year),
     (content) => fillYearSelectorComponent(content),
+    (content) => fillAbandonedColumn(content, autoExcludeAbandoned),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
         platformShortName: true,
+        gameStatusFinished: true,
+        gameStatusAbandoned: !autoExcludeAbandoned,
       }),
     (content) =>
       fillPaginationBlock(
@@ -487,6 +497,8 @@ export function fillFinishedGamesByYearTemplate(
         content,
         {
           platformFilter: true,
+          finishedFilter: true,
+          abandonedFilter: true,
         },
         { from, fromId, filter, filterValue }
       ),

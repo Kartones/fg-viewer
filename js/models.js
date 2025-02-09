@@ -27,16 +27,22 @@ class UserGames {
     return this.byPlatform(platformId).filter((game) => game.finished);
   }
 
-  finishedByYear(year) {
-    return this.items.filter(
-      (game) => game.finished && game.year_finished === year
-    );
+  withFinishedYear() {
+    return this.items.filter((game) => game.year_finished !== null);
   }
 
-  yearsWithFinishedGames() {
+  finishedByYear(year, excludeAbandoned = false) {
+    return this.items
+      .filter((game) => game.year_finished === year)
+      .filter((game) =>
+        excludeAbandoned ? game.finished : game.finished || game.abandoned
+      );
+  }
+
+  yearsWithFinishedOrAbandonedGames() {
     // newest first
     return Array.from(
-      new Set(this.finished().map((game) => game.year_finished))
+      new Set(this.withFinishedYear().map((game) => game.year_finished))
     ).sort((a, b) => b - a);
   }
 
