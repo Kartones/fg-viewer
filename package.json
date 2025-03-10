@@ -6,7 +6,7 @@
   "author": "Kartones",
   "license": "unlicense",
   "private": true,
-  "packageManager": "pnpm@10.6.1",
+  "packageManager": "pnpm@10.6.2",
   "devDependencies": {
     "@babel/preset-env": "7.26.9",
     "babel-jest": "29.7.0",
