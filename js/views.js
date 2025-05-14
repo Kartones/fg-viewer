@@ -473,7 +473,8 @@ export function fillFinishedGamesByYearTemplate(
     (content) => fillFinishedGamesByYearCountLiteral(content, year),
     (content) => fillYear(content, year),
     (content) => fillYearSelectorComponent(content),
-    (content) => fillAbandonedColumn(content, autoExcludeAbandoned),
+    (content) =>
+      fillAbandonedColumn(content, autoExcludeAbandoned, false, sourceId),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
@@ -500,7 +501,7 @@ export function fillFinishedGamesByYearTemplate(
           finishedFilter: true,
           abandonedFilter: true,
         },
-        { from, fromId, filter, filterValue }
+        { from, fromId, filter, filterValue, year }
       ),
   ];
 

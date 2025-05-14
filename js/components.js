@@ -277,11 +277,22 @@ export function fillCatalogAutoExcludeCurrentValue(content) {
 export function fillAbandonedColumn(
   content,
   autoExcludeValue,
-  hasPlatformId = false
+  hasPlatformId = false,
+  sourceId = null
 ) {
-  const linkDestination = hasPlatformId
-    ? "user-games-by-platform"
-    : "user-games";
+  let linkDestination = hasPlatformId ? "user-games-by-platform" : "user-games";
+
+  const isFinishedGamesByYear = sourceId === "finished-games-by-year";
+
+  if (isFinishedGamesByYear) {
+    linkDestination = "finished-games-by-year";
+  }
+
+  let dataIdAttribute = isFinishedGamesByYear
+    ? 'data-id="{{js-year}}"'
+    : hasPlatformId
+    ? 'data-id="{{js-id}}"'
+    : "";
 
   return content.replace(
     "{{js-abandoned-column}}",
@@ -289,9 +300,7 @@ export function fillAbandonedColumn(
       ? ""
       : `
   <th>
-  <a up-emit="link:${linkDestination}" up-emit-props='{"transition":"cross-fade" }' data-filter="abandoned" data-filter-value="{{js-abandoned-filter-value}}" ${
-          hasPlatformId ? 'data-id="{{js-id}}"' : ""
-        } data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#"><i class="nes-icon skull" title="Abandoned"></i>{{js-abandoned-filter-title-suffix}}</a>
+  <a up-emit="link:${linkDestination}" up-emit-props='{"transition":"cross-fade" }' data-filter="abandoned" data-filter-value="{{js-abandoned-filter-value}}" ${dataIdAttribute} data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#"><i class="nes-icon skull" title="Abandoned"></i>{{js-abandoned-filter-title-suffix}}</a>
   </th>
   `
   );
@@ -458,6 +467,9 @@ export function fillDataFields(content, fields = {}, values = {}) {
   }
   if (fields.platformId) {
     content = content.replaceAll("{{js-id}}", values.platformId);
+  }
+  if (values.year) {
+    content = content.replaceAll("{{js-year}}", values.year);
   }
   if (fields.nameFilter) {
     content = content.replaceAll(
