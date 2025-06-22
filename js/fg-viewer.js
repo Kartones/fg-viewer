@@ -17,6 +17,7 @@ import {
 } from "./views.js";
 import { sortGamesBy, sortPlatformsBy } from "./components.js";
 import { DEFAULT_FILTER, DEFAULT_SOURCE_ID } from "./enums.js";
+import { cleanSearchBox } from "./ui/utils.js";
 
 window.appData = null;
 
@@ -343,14 +344,4 @@ window.appData = null;
         </div>`,
     });
   });
-
-  // helpers
-
-  const cleanSearchBox = () => {
-    const searchSelectelement = document.getElementById("gameSearch");
-    if (searchSelectelement) {
-      const searchBox = NiceSelect.bind(searchSelectelement);
-      searchBox.destroy();
-    }
-  };
 })();
