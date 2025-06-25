@@ -11,7 +11,7 @@
     "@babel/preset-env": "7.27.2",
     "babel-jest": "30.0.2",
     "http-server": "14.1.1",
-    "jest": "30.0.2"
+    "jest": "30.0.3"
   },
   "scripts": {
     "test": "jest",
