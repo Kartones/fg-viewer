@@ -12,6 +12,7 @@ import {
   fillFinishedGamesCountLiteral,
   fillOptionalCatalogHeader,
   fillPendingGamesCountLiteral,
+  fillTotalGameTime,
   fillWishlistedGamesCountLiteral,
 } from "../components.js";
 import { renderMarkup } from "./utils.js";
@@ -29,6 +30,7 @@ export function fillCatalogTemplate() {
     fillFinishedGamesCountLiteral,
     fillAbandonedGamesCountLiteral,
     fillWishlistedGamesCountLiteral,
+    fillTotalGameTime,
     fillCatalogGamesProgressBar,
     fillCatalogAutoExcludeCurrentValue,
     fillOptionalCatalogHeader,

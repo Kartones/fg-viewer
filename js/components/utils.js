@@ -15,3 +15,15 @@ export function pluralize(literal, target) {
   }
   return `${literal}${value === 1 ? "" : "s"}`;
 }
+
+export function formatGameTime(minutesPlayed) {
+  if (!minutesPlayed || minutesPlayed === 0) {
+    return "0 mins";
+  }
+  if (minutesPlayed < 60) {
+    return `${minutesPlayed} mins`;
+  }
+  const hours = minutesPlayed / 60;
+  const formattedHours = hours % 1 === 0 ? hours.toFixed(0) : hours.toFixed(1);
+  return `${formattedHours} hours`;
+}

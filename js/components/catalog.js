@@ -1,6 +1,6 @@
 "use strict";
 
-import { pluralize } from "./utils.js";
+import { pluralize, formatGameTime } from "./utils.js";
 
 export function fillCatalogGamesCount(content) {
   return content.replaceAll(
@@ -51,4 +51,15 @@ export function fillOptionalCatalogHeader(content) {
   }
 
   return content.replace("{{js-optional-catalog-header}}", replacement);
+}
+
+export function fillTotalGameTime(content) {
+  const totalMinutes = appData.user.games.items.reduce(
+    (sum, game) => sum + (game.minutes_played || 0),
+    0
+  );
+  return content.replaceAll(
+    "{{js-total-game-time}}",
+    formatGameTime(totalMinutes)
+  );
 }

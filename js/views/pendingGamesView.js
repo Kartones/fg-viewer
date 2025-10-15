@@ -42,6 +42,7 @@ export function fillPendingGamesTemplate(
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
         platformShortName: true,
+        gameTime: true,
       }),
     (content) =>
       fillPaginationBlock(

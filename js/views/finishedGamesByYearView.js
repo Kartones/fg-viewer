@@ -52,6 +52,7 @@ export function fillFinishedGamesByYearTemplate(
         platformShortName: true,
         gameStatusFinished: true,
         gameStatusAbandoned: !autoExcludeAbandoned,
+        gameTime: true,
       }),
     (content) =>
       fillPaginationBlock(

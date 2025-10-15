@@ -30,6 +30,7 @@ export function fillGameDetailsTemplate(gameId, from, fromId) {
     currently_playing: game.currently_playing,
     abandoned: game.abandoned,
     wishlisted: false,
+    minutes_played: game.minutes_played,
   }));
 
   const userWishlistedGames = filterGamesBy(
@@ -42,6 +43,7 @@ export function fillGameDetailsTemplate(gameId, from, fromId) {
     currently_playing: false,
     abandoned: false,
     wishlisted: true,
+    minutes_played: 0,
   }));
 
   const operations = [
@@ -53,6 +55,7 @@ export function fillGameDetailsTemplate(gameId, from, fromId) {
         {
           platformLongName: true,
           platformGameStatusAll: true,
+          gameTime: true,
         },
         {
           isPlatformsList: true,

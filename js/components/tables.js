@@ -3,6 +3,7 @@
 import { nextStateOf, titleSuffixOf } from "./data.js";
 import { linkToGameDetails } from "./games.js";
 import { linkToUserGamesByPlatform } from "./platforms.js";
+import { formatGameTime } from "./utils.js";
 
 function getGameStatusRow(
   userGame,
@@ -131,6 +132,7 @@ export function fillTableRows(
       gameStatusCurrentlyPlaying: false,
       gameStatusAbandoned: false,
       gameStatusFinished: false,
+      gameTime: false,
     },
     ...columns,
   };
@@ -205,6 +207,14 @@ export function fillTableRows(
           }
         }
 
+        if (columns.gameTime) {
+          if (!userGame) {
+            row += "<td></td>";
+          } else {
+            row += `<td class="is-centered">${formatGameTime(userGame.minutes_played)}</td>`;
+          }
+        }
+
         row += "</tr>";
         return row;
       })
@@ -242,6 +252,10 @@ export function fillTableRows(
             finished: columns.gameStatusFinished,
             abandoned: columns.gameStatusAbandoned,
           });
+        }
+
+        if (columns.gameTime) {
+          row += `<td class="is-centered">${formatGameTime(game.minutes_played)}</td>`;
         }
 
         row += "</tr>";

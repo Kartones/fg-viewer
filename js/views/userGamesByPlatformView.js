@@ -78,6 +78,7 @@ export function fillUserGamesByPlatformTemplate(
           gameStatusAll: !autoExcludeAbandoned,
           gameStatusFinished: autoExcludeAbandoned,
           gameStatusCurrentlyPlaying: autoExcludeAbandoned,
+          gameTime: true,
         },
         {
           fromPlatformId: platformId,

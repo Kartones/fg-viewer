@@ -43,6 +43,7 @@ export function fillCurrentlyPlayingGamesTemplate(
         gameName: true,
         platformShortName: true,
         gameStatusFinished: true,
+        gameTime: true,
       }),
     (content) =>
       fillPaginationBlock(

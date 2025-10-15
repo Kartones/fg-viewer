@@ -52,6 +52,7 @@ export function fillUserGamesTemplate(
         gameStatusAll: !autoExcludeAbandoned,
         gameStatusFinished: autoExcludeAbandoned,
         gameStatusCurrentlyPlaying: autoExcludeAbandoned,
+        gameTime: true,
       }),
     (content) =>
       fillPaginationBlock(
