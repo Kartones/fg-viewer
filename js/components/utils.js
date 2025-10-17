@@ -16,7 +16,7 @@ export function pluralize(literal, target) {
   return `${literal}${value === 1 ? "" : "s"}`;
 }
 
-export function formatGameTime(minutesPlayed) {
+export function formatGameTime(minutesPlayed, detailed = false) {
   if (!minutesPlayed || minutesPlayed === 0) {
     return "0 mins";
   }
@@ -24,6 +24,43 @@ export function formatGameTime(minutesPlayed) {
     return `${minutesPlayed} mins`;
   }
   const hours = minutesPlayed / 60;
-  const formattedHours = hours % 1 === 0 ? hours.toFixed(0) : hours.toFixed(1);
-  return `${formattedHours} hours`;
+  const formattedHours =
+    hours % 1 === 0 || detailed ? hours.toFixed(0) : hours.toFixed(1);
+
+  let response = `${formattedHours} hours`;
+
+  if (detailed) {
+    let totalDays = Math.floor(hours / 24);
+    const years = Math.floor(totalDays / 365);
+    totalDays -= years * 365;
+    const months = Math.floor(totalDays / 30);
+    totalDays -= months * 30;
+    const days = totalDays;
+
+    const parts = [];
+    if (years > 0) {
+      parts.push(`${years} year${years === 1 ? "" : "s"}`);
+    }
+    if (months > 0) {
+      parts.push(`${months} month${months === 1 ? "" : "s"}`);
+    }
+    if (days > 0) {
+      parts.push(`${days} day${days === 1 ? "" : "s"}`);
+    }
+
+    if (parts.length > 0) {
+      response += " (";
+      if (parts.length === 1) {
+        response += parts[0];
+      } else if (parts.length === 2) {
+        response += parts.join(" and ");
+      } else {
+        response +=
+          parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1];
+      }
+      response += ")";
+    }
+  }
+
+  return response;
 }

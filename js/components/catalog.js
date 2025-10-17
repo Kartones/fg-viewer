@@ -60,6 +60,6 @@ export function fillTotalGameTime(content) {
   );
   return content.replaceAll(
     "{{js-total-game-time}}",
-    formatGameTime(totalMinutes)
+    formatGameTime(totalMinutes, true)
   );
 }
