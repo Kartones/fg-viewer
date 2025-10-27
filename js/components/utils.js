@@ -27,7 +27,7 @@ export function formatGameTime(minutesPlayed, detailed = false) {
   const formattedHours =
     hours % 1 === 0 || detailed ? hours.toFixed(0) : hours.toFixed(1);
 
-  let response = `${formattedHours} hours`;
+  let response = `${formattedHours} ${hours === 1 ? "hour" : "hours"}`;
 
   if (detailed) {
     let totalDays = Math.floor(hours / 24);
