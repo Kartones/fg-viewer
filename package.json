@@ -1,6 +1,7 @@
 {
   "name": "fg-viewer",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.html",
   "repository": "https://github.com/Kartones/fg-viewer/",
   "author": "Kartones",
@@ -8,19 +9,10 @@
   "private": true,
   "packageManager": "pnpm@10.26.2",
   "devDependencies": {
-    "@babel/preset-env": "7.28.5",
-    "babel-jest": "30.2.0",
-    "http-server": "14.1.1",
-    "jest": "30.2.0"
+    "http-server": "14.1.1"
   },
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "node --test tests/**/*.test.js",
     "start": "http-server"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.[t|j]sx?$": "babel-jest"
-    }
   }
 }

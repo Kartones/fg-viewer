@@ -1,4 +1,6 @@
-import { paginate, sortGamesBy } from "../js/components";
+import { test, describe, beforeEach, before } from "node:test";
+import { strict as assert } from "node:assert";
+import { paginate, sortGamesBy } from "../js/components.js";
 
 global.appData = {};
 let items;
@@ -27,78 +29,78 @@ describe("paging", () => {
     ];
   });
 
-  it("does not errors if trying to page empty list", () => {
+  test("does not errors if trying to page empty list", () => {
     const pagination = paginate([]);
-    expect(pagination.items).not.toBeNull();
-    expect(pagination.items).toEqual([]);
-    expect(pagination.current).toEqual(0);
-    expect(pagination.total).toEqual(1);
-    expect(pagination.prev).toBeNull();
-    expect(pagination.next).toBeNull();
+    assert.notEqual(pagination.items, null);
+    assert.deepEqual(pagination.items, []);
+    assert.equal(pagination.current, 0);
+    assert.equal(pagination.total, 1);
+    assert.equal(pagination.prev, null);
+    assert.equal(pagination.next, null);
   });
 
-  it("properly calculates page size", () => {
+  test("properly calculates page size", () => {
     let pagination = paginate(items, { pageSize: 2 });
-    expect(pagination.total).toEqual(3);
+    assert.equal(pagination.total, 3);
 
     pagination = paginate(items, { pageNumber: 2, pageSize: 2 });
-    expect(pagination.total).toEqual(3);
+    assert.equal(pagination.total, 3);
   });
 
-  it("page size falls back to items count if too big", () => {
+  test("page size falls back to items count if too big", () => {
     const pagination = paginate(items, { pageSize: 200 });
-    expect(pagination.total).toEqual(1);
+    assert.equal(pagination.total, 1);
   });
 
-  it("page size defaults to 1 if lower", () => {
+  test("page size defaults to 1 if lower", () => {
     const pagination = paginate(items, { pageSize: -10 });
-    expect(pagination.total).toEqual(6);
+    assert.equal(pagination.total, 6);
   });
 
-  it("page number cannot be negative", () => {
+  test("page number cannot be negative", () => {
     const pagination = paginate(items, { pageNumber: -1 });
-    expect(pagination.current).toEqual(0);
+    assert.equal(pagination.current, 0);
   });
 
-  it("page number falls back to max valid page if too big", () => {
+  test("page number falls back to max valid page if too big", () => {
     const pagination = paginate(items, { pageNumber: 100, pageSize: 2 });
-    expect(pagination.current).toEqual(2);
+    assert.equal(pagination.current, 2);
   });
 
-  it("prev points to correct previous page number", () => {
+  test("prev points to correct previous page number", () => {
     let pagination = paginate(items, { pageNumber: 2, pageSize: 2 });
-    expect(pagination.prev).toEqual(1);
+    assert.equal(pagination.prev, 1);
 
     pagination = paginate(items, { pageNumber: 1, pageSize: 2 });
-    expect(pagination.prev).toEqual(0);
+    assert.equal(pagination.prev, 0);
 
     pagination = paginate(items, { pageNumber: 0, pageSize: 2 });
-    expect(pagination.prev).toBeNull();
+    assert.equal(pagination.prev, null);
   });
 
-  it("next points to correct next page number", () => {
+  test("next points to correct next page number", () => {
     let pagination = paginate(items, { pageNumber: 2, pageSize: 2 });
-    expect(pagination.next).toBeNull();
+    assert.equal(pagination.next, null);
 
     pagination = paginate(items, { pageNumber: 1, pageSize: 2 });
-    expect(pagination.next).toEqual(2);
+    assert.equal(pagination.next, 2);
 
     pagination = paginate(items, { pageNumber: 0, pageSize: 2 });
-    expect(pagination.next).toEqual(1);
+    assert.equal(pagination.next, 1);
   });
 
-  it("items returned are correctly split in pages", () => {
+  test("items returned are correctly split in pages", () => {
     let pagination;
 
     pagination = paginate(items, { pageNumber: 0, pageSize: 3 });
-    expect(pagination.items).toEqual([
+    assert.deepEqual(pagination.items, [
       { game_id: "id1" },
       { game_id: "id2" },
       { game_id: "id3" },
     ]);
 
     pagination = paginate(items, { pageNumber: 1, pageSize: 3 });
-    expect(pagination.items).toEqual([
+    assert.deepEqual(pagination.items, [
       { game_id: "id4" },
       { game_id: "id5" },
       { game_id: "id6" },
@@ -106,7 +108,7 @@ describe("paging", () => {
 
     // out of bounds == last page
     pagination = paginate(items, { pageNumber: 99, pageSize: 3 });
-    expect(pagination.items).toEqual([
+    assert.deepEqual(pagination.items, [
       { game_id: "id4" },
       { game_id: "id5" },
       { game_id: "id6" },
@@ -116,43 +118,43 @@ describe("paging", () => {
     items.push({ game_id: "id7" });
 
     pagination = paginate(items, { pageNumber: 0, pageSize: 3 });
-    expect(pagination.items).toEqual([
+    assert.deepEqual(pagination.items, [
       { game_id: "id1" },
       { game_id: "id2" },
       { game_id: "id3" },
     ]);
 
     pagination = paginate(items, { pageNumber: 1, pageSize: 3 });
-    expect(pagination.items).toEqual([
+    assert.deepEqual(pagination.items, [
       { game_id: "id4" },
       { game_id: "id5" },
       { game_id: "id6" },
     ]);
 
     pagination = paginate(items, { pageNumber: 2, pageSize: 3 });
-    expect(pagination.items).toEqual([{ game_id: "id7" }]);
+    assert.deepEqual(pagination.items, [{ game_id: "id7" }]);
 
     // page size 1
     pagination = paginate(items, { pageNumber: 0, pageSize: 1 });
-    expect(pagination.items).toEqual([{ game_id: "id1" }]);
+    assert.deepEqual(pagination.items, [{ game_id: "id1" }]);
     pagination = paginate(items, { pageNumber: 1, pageSize: 1 });
-    expect(pagination.items).toEqual([{ game_id: "id2" }]);
+    assert.deepEqual(pagination.items, [{ game_id: "id2" }]);
     pagination = paginate(items, { pageNumber: 6, pageSize: 1 });
-    expect(pagination.items).toEqual([{ game_id: "id7" }]);
+    assert.deepEqual(pagination.items, [{ game_id: "id7" }]);
   });
 
-  it("works with a 1-result scenario", () => {
+  test("works with a 1-result scenario", () => {
     const pagination = paginate([items[0]]);
-    expect(pagination.items).toEqual([{ game_id: "id1" }]);
-    expect(pagination.current).toEqual(0);
-    expect(pagination.total).toEqual(1);
-    expect(pagination.prev).toBeNull();
-    expect(pagination.next).toBeNull();
+    assert.deepEqual(pagination.items, [{ game_id: "id1" }]);
+    assert.equal(pagination.current, 0);
+    assert.equal(pagination.total, 1);
+    assert.equal(pagination.prev, null);
+    assert.equal(pagination.next, null);
   });
 });
 
 describe("sorting", () => {
-  beforeAll(() => {
+  before(() => {
     appData = {
       // Fill with relevant info like the name
       games: {
@@ -186,11 +188,11 @@ describe("sorting", () => {
   });
 
   describe("currentlyPlaying", () => {
-    it("sorts ascending in the correct order", () => {
+    test("sorts ascending in the correct order", () => {
       const sortedItems = sortGamesBy(items, "currentlyPlaying", "ascending");
 
       // Not only all currently playing first, but in the order they originally appeared (e.g. id2 before id4)
-      expect(sortedItems).toEqual([
+      assert.deepEqual(sortedItems, [
         {
           game_id: "id2",
           currently_playing: true,
@@ -210,12 +212,12 @@ describe("sorting", () => {
       ]);
     });
 
-    it("sorts descending in the correct order", () => {
+    test("sorts descending in the correct order", () => {
       const sortedItems = sortGamesBy(items, "currentlyPlaying", "descending");
 
       // Same as ascending, both the corresponding group first (not playing)
       // and maintaining the order (id1 before id3, etc.)
-      expect(sortedItems).toEqual([
+      assert.deepEqual(sortedItems, [
         {
           game_id: "id1",
           currently_playing: false,
