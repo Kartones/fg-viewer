@@ -181,3 +181,7 @@ span.dir {
 summary {
     color: #0060c6;
 }
+
+.nice-select .list {
+    max-height: 400px !important;
+}
