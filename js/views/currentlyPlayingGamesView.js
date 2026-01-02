@@ -61,6 +61,7 @@ export function fillCurrentlyPlayingGamesTemplate(
         {
           platformFilter: true,
           finishedFilter: true,
+          gameTimeFilter: true,
         },
         { from, fromId, filter, filterValue }
       ),

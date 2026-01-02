@@ -104,6 +104,7 @@ export function fillUserGamesByPlatformTemplate(
           currentlyPlayingFilter: true,
           finishedFilter: true,
           abandonedFilter: true,
+          gameTimeFilter: true,
         },
         { from, fromId, platformId, filter, filterValue }
       ),

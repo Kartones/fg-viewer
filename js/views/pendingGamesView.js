@@ -59,6 +59,7 @@ export function fillPendingGamesTemplate(
         content,
         {
           platformFilter: true,
+          gameTimeFilter: true,
         },
         { from, fromId, filter, filterValue }
       ),

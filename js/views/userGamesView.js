@@ -72,6 +72,7 @@ export function fillUserGamesTemplate(
           currentlyPlayingFilter: true,
           finishedFilter: true,
           abandonedFilter: true,
+          gameTimeFilter: true,
         },
         { from, fromId, filter, filterValue }
       ),

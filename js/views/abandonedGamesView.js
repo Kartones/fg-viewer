@@ -59,6 +59,7 @@ export function fillAbandonedGamesTemplate(
         content,
         {
           platformFilter: true,
+          gameTimeFilter: true,
         },
         { from, fromId, filter, filterValue }
       ),

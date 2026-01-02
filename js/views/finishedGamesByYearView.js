@@ -72,6 +72,7 @@ export function fillFinishedGamesByYearTemplate(
           platformFilter: true,
           finishedFilter: true,
           abandonedFilter: true,
+          gameTimeFilter: true,
         },
         { from, fromId, filter, filterValue, year }
       ),
