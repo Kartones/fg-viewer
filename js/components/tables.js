@@ -45,6 +45,7 @@ export function fillDataFields(content, fields = {}, values = {}) {
       currentlyPlayingFilter: false,
       finishedFilter: false,
       abandonedFilter: false,
+      gameTimeFilter: false,
     },
     ...fields,
   };
@@ -109,6 +110,16 @@ export function fillDataFields(content, fields = {}, values = {}) {
     content = content.replaceAll(
       "{{js-abandoned-filter-title-suffix}}",
       titleSuffixOf("abandoned", values.filter, values.filterValue)
+    );
+  }
+  if (fields.gameTimeFilter) {
+    content = content.replaceAll(
+      "{{js-game-time-filter-value}}",
+      nextStateOf("gameTime", values.filter, values.filterValue)
+    );
+    content = content.replaceAll(
+      "{{js-game-time-filter-title-suffix}}",
+      titleSuffixOf("gameTime", values.filter, values.filterValue)
     );
   }
 

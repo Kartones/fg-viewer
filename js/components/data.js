@@ -123,6 +123,17 @@ export function sortGamesBy(games, field, value) {
       appData.platforms[game1.platform_id].shortname
     );
 
+  const gameTimeAscending = (game1, game2) => {
+    const time1 = game1.minutes_played || 0;
+    const time2 = game2.minutes_played || 0;
+    return time2 - time1;
+  };
+  const gameTimeDescending = (game1, game2) => {
+    const time1 = game1.minutes_played || 0;
+    const time2 = game2.minutes_played || 0;
+    return time1 - time2;
+  };
+
   const items = [...games];
 
   switch (field) {
@@ -159,6 +170,13 @@ export function sortGamesBy(games, field, value) {
         items.sort(platformShortNameDescending);
       } else {
         items.sort(platformShortNameAscending);
+      }
+      break;
+    case "gameTime":
+      if (value === "descending") {
+        items.sort(gameTimeDescending);
+      } else {
+        items.sort(gameTimeAscending);
       }
   }
 
