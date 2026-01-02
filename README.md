@@ -12,11 +12,11 @@ It uses JSON data exported via the `manage.py export_user_catalog <a-username>` 
 
 ### Development
 
-For development you need to have installed [`nodejs`](https://nodejs.org/en/download/) and [pnpm](https://pnpm.io/).
+For development you need to have installed [`NodeJS`](https://nodejs.org/en/download/) and [pnpm](https://pnpm.io/).
 
 Upon first checkout of the repository, you must run `pnpm install`.
 
-When you want to run the dev server, `pnpm start`.
+When you want to run the dev server (does not use NodeJS), `pnpm start`.
 
 If you want to run the (few) tests, `pnpm test`;
 
@@ -33,9 +33,6 @@ For production you don't need anything other than a web server (e.g. [`nginx`](h
 
 ## Roadmap
 
-When all the following items are ready, an initial version (with `unpoly`) could be considered as done, and we'd go into a second phase of rewriting the code with `React` or similar.
-
-- self-serve font
 - if at home, don't transition/navigate (using https://unpoly.com/up.history ?)
 - try activating navigation upon rendering (https://unpoly.com/up.render)
 - more tests
