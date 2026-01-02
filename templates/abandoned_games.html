@@ -16,7 +16,9 @@
                       <th>
                         <a up-emit="link:abandoned-games" up-emit-props='{"transition":"cross-fade" }' data-filter="platform" data-filter-value="{{js-platform-filter-value}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#">Platform{{js-platform-filter-title-suffix}}</a>
                       </th>
-                      <th>Game Time</th>
+                      <th>
+                        <a up-emit="link:abandoned-games" up-emit-props='{"transition":"cross-fade" }' data-filter="gameTime" data-filter-value="{{js-game-time-filter-value}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#">Game Time{{js-game-time-filter-title-suffix}}</a>
+                      </th>
                 </tr>
             </thead>
             <tbody>
