@@ -2,8 +2,13 @@
 
 import { sortGamesBy, filterGamesBy } from "./data.js";
 
-export function fillYearSelectorComponent(content, sourceId = "finished-games-by-year") {
-  const years = appData.user.games.yearsWithFinishedOrAbandonedGames();
+export function fillYearSelectorComponent(
+  content,
+  sourceId = "finished-games-by-year"
+) {
+  const kind =
+    sourceId === "abandoned-games-by-year" ? "abandoned" : "finished";
+  const years = appData.user.games.yearsWithFinishedOrAbandonedGames(kind);
 
   const yearsHTML = years
     .map(

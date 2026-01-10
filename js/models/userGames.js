@@ -39,10 +39,23 @@ export class UserGames {
       );
   }
 
-  yearsWithFinishedOrAbandonedGames() {
+  yearsWithFinishedOrAbandonedGames(kind) {
+    if (kind !== "finished" && kind !== "abandoned") {
+      throw new Error(
+        `Invalid kind parameter: "${kind}". Must be "finished" or "abandoned".`
+      );
+    }
+
+    const filterFn =
+      kind === "finished" ? (game) => game.finished : (game) => game.abandoned;
+
     // newest first
     return Array.from(
-      new Set(this.withFinishedYear().map((game) => game.year_finished))
+      new Set(
+        this.withFinishedYear()
+          .filter(filterFn)
+          .map((game) => game.year_finished)
+      )
     ).sort((a, b) => b - a);
   }
 
