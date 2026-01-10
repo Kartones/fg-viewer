@@ -62,6 +62,7 @@ export class DataLoader {
       "catalog.html",
       "game_details.html",
       "abandoned_games.html",
+      "abandoned_games_by_year.html",
       "currently_playing_games.html",
       "pending_games.html",
       "finished_games.html",

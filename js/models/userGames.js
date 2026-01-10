@@ -64,6 +64,12 @@ export class UserGames {
     return this.byPlatform(platformId).filter((game) => game.abandoned);
   }
 
+  abandonedByYear(year) {
+    return this.items.filter(
+      (game) => game.year_finished === year && game.abandoned
+    );
+  }
+
   byGame(gameId) {
     return this.items.filter((game) => game.game_id === gameId);
   }

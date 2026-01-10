@@ -5,6 +5,7 @@ export { fillUserGamesTemplate } from "./views/userGamesView.js";
 export { fillUserGamesByPlatformTemplate } from "./views/userGamesByPlatformView.js";
 export { fillGameDetailsTemplate } from "./views/gameDetailsView.js";
 export { fillAbandonedGamesTemplate } from "./views/abandonedGamesView.js";
+export { fillAbandonedGamesByYearTemplate } from "./views/abandonedGamesByYearView.js";
 export { fillCurrentlyPlayingGamesTemplate } from "./views/currentlyPlayingGamesView.js";
 export { fillPendingGamesTemplate } from "./views/pendingGamesView.js";
 export { fillFinishedGamesByYearTemplate } from "./views/finishedGamesByYearView.js";

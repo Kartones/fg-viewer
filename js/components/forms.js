@@ -2,13 +2,13 @@
 
 import { sortGamesBy, filterGamesBy } from "./data.js";
 
-export function fillYearSelectorComponent(content) {
+export function fillYearSelectorComponent(content, sourceId = "finished-games-by-year") {
   const years = appData.user.games.yearsWithFinishedOrAbandonedGames();
 
   const yearsHTML = years
     .map(
       (year) =>
-        `<a up-emit="link:finished-games-by-year" href="#" data-id="${year}">${year}</a>`
+        `<a up-emit="link:${sourceId}" href="#" data-id="${year}">${year}</a>`
     )
     .join(" - ");
 

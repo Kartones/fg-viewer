@@ -1,11 +1,10 @@
 "use strict";
 
 import {
-  fillAbandonedColumn,
   fillBackButton,
   fillCapitalizedUserName,
   fillDataFields,
-  fillFinishedGamesByYearCountLiteral,
+  fillAbandonedGamesByYearCountLiteral,
   fillPaginationBlock,
   fillPaginationIndexes,
   fillTableRows,
@@ -16,7 +15,7 @@ import {
 } from "../components.js";
 import { renderMarkup } from "./utils.js";
 
-export function fillFinishedGamesByYearTemplate(
+export function fillAbandonedGamesByYearTemplate(
   year,
   from,
   fromId,
@@ -24,16 +23,10 @@ export function fillFinishedGamesByYearTemplate(
   filterValue,
   pageNumber
 ) {
-  let sourceId = "finished-games-by-year";
-
-  const autoExcludeAbandoned = appData.preferences.shouldAutoExclude();
+  let sourceId = "abandoned-games-by-year";
 
   const pagination = paginate(
-    sortGamesBy(
-      appData.user.games.finishedByYear(year, autoExcludeAbandoned),
-      filter,
-      filterValue
-    ),
+    sortGamesBy(appData.user.games.abandonedByYear(year), filter, filterValue),
     { pageNumber, useIndexes: true }
   );
 
@@ -41,17 +34,13 @@ export function fillFinishedGamesByYearTemplate(
     fillCapitalizedUserName,
     fillBackButton,
     (content) => fillPaginationIndexes(content, pagination.indexes),
-    (content) => fillFinishedGamesByYearCountLiteral(content, year),
+    (content) => fillAbandonedGamesByYearCountLiteral(content, year),
     (content) => fillYear(content, year),
     (content) => fillYearSelectorComponent(content, sourceId),
-    (content) =>
-      fillAbandonedColumn(content, autoExcludeAbandoned, false, sourceId),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
         platformShortName: true,
-        gameStatusFinished: true,
-        gameStatusAbandoned: !autoExcludeAbandoned,
         gameTime: true,
       }),
     (content) =>
@@ -70,8 +59,6 @@ export function fillFinishedGamesByYearTemplate(
         content,
         {
           platformFilter: true,
-          finishedFilter: true,
-          abandonedFilter: true,
           gameTimeFilter: true,
         },
         { from, fromId, filter, filterValue, year }

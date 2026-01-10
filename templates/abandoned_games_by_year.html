@@ -1,0 +1,45 @@
+<section class="nes-container main-container">
+  <div>
+
+      <h2><i class="nes-icon skull" title="Abandoned"></i> {{js-username}} Abandoned games in {{js-year}}</h2>
+
+        {{js-year-selector}}
+
+      <table class="nes-table is-bordered">
+          <thead>
+              <tr>
+                <th>
+                    <a up-emit="link:abandoned-games-by-year" up-emit-props='{"transition":"cross-fade" }' data-id="{{js-year}}" data-filter="name" data-filter-value="{{js-name-filter-value}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#">Name{{js-name-filter-title-suffix}}</a>
+                  </th>
+                  <th>
+                    <a up-emit="link:abandoned-games-by-year" up-emit-props='{"transition":"cross-fade" }' data-id="{{js-year}}" data-filter="platform" data-filter-value="{{js-platform-filter-value}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#">Platform{{js-platform-filter-title-suffix}}</a>
+                  </th>
+                  <th>
+                    <a up-emit="link:abandoned-games-by-year" up-emit-props='{"transition":"cross-fade" }' data-id="{{js-year}}" data-filter="gameTime" data-filter-value="{{js-game-time-filter-value}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#">Game Time{{js-game-time-filter-title-suffix}}</a>
+                  </th>
+              </tr>
+          </thead>
+          <tbody>
+            {{js-table-rows}}
+          </tbody>
+      </table>
+
+      <section class="nes-container">
+          <div>
+              <p>
+                {{js-abandoned-games-by-year-count}}.
+              </p>
+          </div>
+      </section>
+
+      <section class="nes-container">
+          <div>
+              {{js-pagination}}
+              <p>
+                  {{js-back-from}}
+              </p>
+          </div>
+      </section>
+
+</div>
+</section>
