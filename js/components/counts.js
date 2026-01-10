@@ -49,6 +49,17 @@ export function fillAbandonedGamesCountLiteral(content, platformId = null) {
   );
 }
 
+export function fillAbandonedGamesByYearCountLiteral(content, year) {
+  const items = appData.user.games.abandonedByYear(year);
+  return content.replaceAll(
+    "{{js-abandoned-games-by-year-count}}",
+    `<strong>${items.length}</strong> abandoned ${pluralize(
+      "game",
+      items
+    )} in ${year}`
+  );
+}
+
 export function fillPendingGamesCountLiteral(content, platformId = null) {
   const items = platformId
     ? appData.user.games.pendingByPlatform(platformId)

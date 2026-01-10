@@ -81,6 +81,7 @@ export function fillPaginationIndexes(content, indexes, options = {}) {
     "currently-playing-games",
     "pending-games",
     "abandoned-games",
+    "abandoned-games-by-year",
     "wishlisted-games",
   ];
 

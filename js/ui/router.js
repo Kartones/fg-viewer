@@ -3,6 +3,7 @@
 import {
   fillGameDetailsTemplate,
   fillAbandonedGamesTemplate,
+  fillAbandonedGamesByYearTemplate,
   fillCurrentlyPlayingGamesTemplate,
   fillPendingGamesTemplate,
   fillFinishedGamesTemplate,
@@ -63,6 +64,24 @@ export class Router {
 
       up.render("section.main-container", {
         fragment: fillFinishedGamesByYearTemplate(
+          year,
+          element.dataset.from || DEFAULT_SOURCE_ID,
+          parseInt(element.dataset.fromId) || "",
+          element.dataset.filter || DEFAULT_FILTER,
+          element.dataset.filterValue || "",
+          parseInt(element.dataset.page || 0)
+        ),
+        transition: event.transition || "move-left",
+        scroll: "main",
+      });
+      event.preventDefault();
+    });
+
+    up.on("link:abandoned-games-by-year", (event, element) => {
+      const year = parseInt(element.dataset.id) || new Date().getFullYear();
+
+      up.render("section.main-container", {
+        fragment: fillAbandonedGamesByYearTemplate(
           year,
           element.dataset.from || DEFAULT_SOURCE_ID,
           parseInt(element.dataset.fromId) || "",
