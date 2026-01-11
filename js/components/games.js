@@ -1,5 +1,9 @@
 "use strict";
 
+// TODO: this should be configuration-based
+const PC_PLATFORM_ID = 3;
+const PS2_PLATFORM_ID = 10;
+
 function linkToGameDetails(gameId, from, fromId = null) {
   const fromIdFragment = fromId ? `data-from-id="${fromId}"` : "";
 
@@ -55,14 +59,15 @@ export function fillGameURLs(content, gameId) {
     "Before I Play"
   ] = `https://beforeiplay.com/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
 
-  if (game.platforms.includes(3)) {
-    // only for PC
+  if (game.platforms.includes(PC_PLATFORM_ID)) {
     gameUrls[
       "PCGamingWiki"
     ] = `https://www.pcgamingwiki.com/w/index.php?search=${urlEncodedName}&title=Special%3ASearch`;
+    gameUrls[
+      "WSFG"
+    ] = `https://www.wsgf.org/search/node?keys=${urlEncodedName}`;
   }
-  if (game.platforms.includes(10)) {
-    // only for Playstation 2
+  if (game.platforms.includes(PS2_PLATFORM_ID)) {
     gameUrls[
       "PCSX2Wiki"
     ] = `https://wiki.pcsx2.net/index.php?search=${urlEncodedName}&title=Special%3ASearch`;
