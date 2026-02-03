@@ -59,13 +59,34 @@ export function fillGameURLs(content, gameId) {
     "Before I Play"
   ] = `https://beforeiplay.com/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
 
+  // Giant Bomb DB now is barebones, so prefer Steam or manually-added website links
+  const urlKeys = Object.keys(gameUrls);
+  const hasUrlKey = (key) => Object.keys(gameUrls).some(k => k.toLowerCase() === key.toLowerCase());
+  if (hasUrlKey("steam") || hasUrlKey("website")) {
+    const giantBombKey = urlKeys.find(k => k.toLowerCase() === "giant bomb");
+    if (giantBombKey) {
+      delete gameUrls[giantBombKey];
+    }
+  }
+
+  // Assume IGN guides cover only games since they started the wikis/guides section (2002)
+  if (game.publish_date >= 2002) {
+    gameUrls[
+      "IGN"
+    ] = `https://duckduckgo.com/?q=${urlEncodedName}+ign+guide`;
+  }
+
   if (game.platforms.includes(PC_PLATFORM_ID)) {
     gameUrls[
       "PCGamingWiki"
     ] = `https://www.pcgamingwiki.com/w/index.php?search=${urlEncodedName}&title=Special%3ASearch`;
-    gameUrls[
-      "WSFG"
-    ] = `https://www.wsgf.org/search/node?keys=${urlEncodedName}`;
+    // WSGF DB only has games with fixes from 1992 onwards
+    // By 2016, most games already supported 16:9
+    if (game.publish_date >= 1992 && game.publish_date < 2016) {
+      gameUrls[
+        "WSFG"
+      ] = `https://www.wsgf.org/search/node?keys=${urlEncodedName}`;
+    }
   }
   if (game.platforms.includes(PS2_PLATFORM_ID)) {
     gameUrls[
