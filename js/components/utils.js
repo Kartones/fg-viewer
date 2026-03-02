@@ -24,12 +24,8 @@ export function formatGameTime(minutesPlayed, detailed = false) {
     return `${minutesPlayed} mins`;
   }
   const hours = minutesPlayed / 60;
-  const formattedHours =
-    hours % 1 === 0 || detailed ? hours.toFixed(0) : hours.toFixed(1);
 
-  let response = `${formattedHours} ${hours === 1 ? "hour" : "hours"}`;
-
-  if (detailed) {
+  if (detailed && hours >= 24) {
     let totalDays = Math.floor(hours / 24);
     const years = Math.floor(totalDays / 365);
     totalDays -= years * 365;
@@ -48,19 +44,15 @@ export function formatGameTime(minutesPlayed, detailed = false) {
       parts.push(`${days} day${days === 1 ? "" : "s"}`);
     }
 
-    if (parts.length > 0) {
-      response += " (";
-      if (parts.length === 1) {
-        response += parts[0];
-      } else if (parts.length === 2) {
-        response += parts.join(" and ");
-      } else {
-        response +=
-          parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1];
-      }
-      response += ")";
+    if (parts.length === 1) {
+      return parts[0];
+    } else if (parts.length === 2) {
+      return parts.join(" and ");
     }
+    return parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1];
   }
 
-  return response;
+  const formattedHours =
+    hours % 1 === 0 || detailed ? hours.toFixed(0) : hours.toFixed(1);
+  return `${formattedHours} ${hours === 1 ? "hour" : "hours"}`;
 }
