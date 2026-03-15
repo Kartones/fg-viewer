@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}());</script>
   <link rel="preload" href="css/fonts.css" as="style">
   <link rel="stylesheet" href="css/fonts.css" />
   <link rel="stylesheet" href="css/nes.min.css" />
@@ -25,11 +26,30 @@
     </section>
   </div>
   <footer>
-    Made with <a up-emit="link:random-game" href="#"><i class="nes-icon heart is-small" title="love"></i></a> by <a href="https://kartones.net" target="_blank">Kartones</a> | Fork it on <a href="https://github.com/Kartones/fg-viewer" target="_blank">Github</a>
+    Made with <a up-emit="link:random-game" href="#"><i class="nes-icon heart is-small" title="love"></i></a> by <a href="https://kartones.net" target="_blank">Kartones</a> | Fork it on <a href="https://github.com/Kartones/fg-viewer" target="_blank">Github</a> | Theme: <a id="theme-toggle" href="#">Light</a>
   </footer>
   <div id="feedback"></div>
   <script src="js/unpoly.min.js"></script>
   <script type="module" src="js/fg-viewer.js"></script>
   <script src="js/nice-select2.js"></script>
+  <script>
+    (function() {
+      var toggle = document.getElementById('theme-toggle');
+      var currentTheme = localStorage.getItem('theme') || 'light';
+      toggle.textContent = currentTheme === 'dark' ? 'Dark' : 'Light';
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        var newTheme = isDark ? 'light' : 'dark';
+        if (newTheme === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
+        localStorage.setItem('theme', newTheme);
+        toggle.textContent = newTheme === 'dark' ? 'Dark' : 'Light';
+      });
+    }());
+  </script>
 </body>
 </html>

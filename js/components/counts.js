@@ -32,7 +32,7 @@ export function fillFinishedGamesByYearCountLiteral(content, year) {
   const items = appData.user.games.finishedByYear(year);
   return content.replaceAll(
     "{{js-finished-games-by-year-count}}",
-    `<strong>${items.length}</strong> finished ${pluralize(
+    `<strong>${items.length}</strong> finished (or abandoned) ${pluralize(
       "game",
       items
     )} in ${year}`

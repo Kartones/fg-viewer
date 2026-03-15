@@ -185,3 +185,119 @@ summary {
 .nice-select .list {
     max-height: 400px !important;
 }
+
+/* Dark theme */
+[data-theme="dark"] body {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] h1 a,
+[data-theme="dark"] h1 a:hover {
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] a.nes-btn {
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .nes-container::after {
+    border-color: #e0e0e0;
+}
+
+[data-theme="dark"] .nes-container > .title {
+    background-color: #1a1a1a;
+}
+
+[data-theme="dark"] .nes-table {
+    background-color: #1a1a1a;
+}
+
+[data-theme="dark"] .nes-table th {
+    background-color: #333;
+}
+
+[data-theme="dark"] .nes-table.is-bordered {
+    box-shadow: 4px 0 #e0e0e0, 0 -4px #e0e0e0, -4px 0 #e0e0e0, 0 4px #e0e0e0;
+}
+
+[data-theme="dark"] .nes-table.is-bordered tr th+th {
+    box-shadow: -4px 0 #e0e0e0;
+}
+
+[data-theme="dark"] .nes-table.is-bordered tr td {
+    box-shadow: 0 -4px #e0e0e0;
+}
+
+[data-theme="dark"] .nes-table.is-bordered tr td:not(:first-child) {
+    box-shadow: -4px 0 #e0e0e0, 0 -4px #e0e0e0;
+}
+
+[data-theme="dark"] .row-finished {
+    background-color: #2a2a1a;
+}
+
+[data-theme="dark"] .row-abandoned {
+    background-color: #2a2a2a;
+}
+
+[data-theme="dark"] .nes-progress {
+    background-color: #1a1a1a;
+    box-shadow: 4px 0 #e0e0e0, -4px 0 #e0e0e0, 0 4px #e0e0e0, 0 -4px #e0e0e0;
+}
+
+[data-theme="dark"] .nes-progress::-webkit-progress-bar {
+    background-color: #1a1a1a;
+}
+
+[data-theme="dark"] .nes-btn::after,
+[data-theme="dark"] .nes-btn::before {
+    border-color: #e0e0e0;
+}
+
+[data-theme="dark"] .nes-btn {
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .nes-btn:focus,
+[data-theme="dark"] .nes-btn:hover {
+    background-color: #444;
+}
+
+[data-theme="dark"] .nes-checkbox+span::before,
+[data-theme="dark"] .nes-checkbox:checked+span::before {
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .nes-input,
+[data-theme="dark"] .nes-textarea {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .nice-select {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .nice-select .list {
+    background-color: #2a2a2a;
+}
+
+[data-theme="dark"] .nice-select .option:hover {
+    background-color: #3a3a3a;
+}
+
+[data-theme="dark"] hr {
+    border-color: #555;
+}
+
+[data-theme="dark"] a,
+[data-theme="dark"] a:visited {
+    color: #6ab1ff;
+}
+
+[data-theme="dark"] a:hover {
+    color: #5aabff;
+}
