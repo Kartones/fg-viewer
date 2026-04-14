@@ -221,6 +221,8 @@ export function fillTableRows(
         if (columns.gameTime) {
           if (!userGame) {
             row += "<td></td>";
+          } else if (appData.games[options.gameId]?.parent_game != null) {
+            row += `<td class="is-centered">n/a (DLC)</td>`;
           } else {
             row += `<td class="is-centered">${formatGameTime(userGame.minutes_played)}</td>`;
           }
@@ -266,7 +268,11 @@ export function fillTableRows(
         }
 
         if (columns.gameTime) {
-          row += `<td class="is-centered">${formatGameTime(game.minutes_played)}</td>`;
+          if (appData.games[game.game_id]?.parent_game != null) {
+            row += `<td class="is-centered">n/a (DLC)</td>`;
+          } else {
+            row += `<td class="is-centered">${formatGameTime(game.minutes_played)}</td>`;
+          }
         }
 
         row += "</tr>";
