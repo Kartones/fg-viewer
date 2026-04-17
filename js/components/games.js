@@ -59,6 +59,10 @@ export function fillGameURLs(content, gameId) {
     "Before I Play"
   ] = `https://beforeiplay.com/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
 
+  gameUrls[
+    "V's Recommendations"
+  ] = `https://vsrecommendedgames.miraheze.org/w/index.php?search=%22${urlEncodedName}%22&title=Special%3ASearch&profile=default&fulltext=1`;
+
   // Giant Bomb DB now is barebones, so prefer Steam or manually-added website links
   const urlKeys = Object.keys(gameUrls);
   const hasUrlKey = (key) => Object.keys(gameUrls).some(k => k.toLowerCase() === key.toLowerCase());
