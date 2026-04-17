@@ -45,24 +45,6 @@ export function fillGameURLs(content, gameId) {
   const gameUrls = game.urls || {};
   const urlEncodedName = encodeURIComponent(game.name_for_search);
 
-  gameUrls[
-    "HowLongToBeat"
-  ] = `https://howlongtobeat.com/?q=${urlEncodedName}#search`;
-  gameUrls[
-    "GameFAQs"
-  ] = `https://gamefaqs.gamespot.com/search?game=${urlEncodedName}`;
-  gameUrls[
-    "StragegyWiki"
-  ] = `https://strategywiki.org/w/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
-
-  gameUrls[
-    "Before I Play"
-  ] = `https://beforeiplay.com/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
-
-  gameUrls[
-    "V's Recommendations"
-  ] = `https://vsrecommendedgames.miraheze.org/w/index.php?search=%22${urlEncodedName}%22&title=Special%3ASearch&profile=default&fulltext=1`;
-
   // Giant Bomb DB now is barebones, so prefer Steam or manually-added website links
   const urlKeys = Object.keys(gameUrls);
   const hasUrlKey = (key) => Object.keys(gameUrls).some(k => k.toLowerCase() === key.toLowerCase());
@@ -72,6 +54,14 @@ export function fillGameURLs(content, gameId) {
       delete gameUrls[giantBombKey];
     }
   }
+
+  gameUrls[
+    "HowLongToBeat"
+  ] = `https://howlongtobeat.com/?q=${urlEncodedName}#search`;
+
+  gameUrls[
+    "Before I Play"
+  ] = `https://beforeiplay.com/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
 
   // Assume IGN guides cover only games since they started the wikis/guides section (2002)
   if (game.publish_date >= 2002) {
@@ -84,12 +74,21 @@ export function fillGameURLs(content, gameId) {
     gameUrls[
       "PCGamingWiki"
     ] = `https://www.pcgamingwiki.com/w/index.php?search=${urlEncodedName}&title=Special%3ASearch`;
-    // WSGF DB only has games with fixes from 1992 onwards
-    // By 2016, most games already supported 16:9
-    if (game.publish_date >= 1992 && game.publish_date < 2016) {
+
+    if (game.publish_date > 1991) {
       gameUrls[
-        "WSFG"
-      ] = `https://www.wsgf.org/search/node?keys=${urlEncodedName}`;
+        "ModDB"
+      ] = `https://www.moddb.com/search?q=${urlEncodedName}`;
+      gameUrls[
+          "Nexus Mods"
+        ] = `https://www.nexusmods.com/games?keyword=${urlEncodedName}&sort=name`;
+
+      // WSGF DB only has games with fixes from 1992 onwards, and by 2016, most games already supported 16:9
+      if (game.publish_date < 2016) {
+        gameUrls[
+          "WSFG"
+        ] = `https://www.wsgf.org/search/node?keys=${urlEncodedName}`;
+      }
     }
   }
   if (game.platforms.includes(PS2_PLATFORM_ID)) {
@@ -97,6 +96,16 @@ export function fillGameURLs(content, gameId) {
       "PCSX2Wiki"
     ] = `https://wiki.pcsx2.net/index.php?search=${urlEncodedName}&title=Special%3ASearch`;
   }
+
+  gameUrls[
+    "GameFAQs"
+  ] = `https://gamefaqs.gamespot.com/search?game=${urlEncodedName}`;
+  gameUrls[
+    "StragegyWiki"
+  ] = `https://strategywiki.org/w/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
+  gameUrls[
+    "V's Recommendations"
+  ] = `https://vsrecommendedgames.miraheze.org/w/index.php?search=%22${urlEncodedName}%22&title=Special%3ASearch&profile=default&fulltext=1`;
 
   return content.replaceAll(
     "{{js-game-urls}}",
