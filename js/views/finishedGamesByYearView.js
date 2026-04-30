@@ -8,6 +8,7 @@ import {
   fillFinishedGamesByYearCountLiteral,
   fillPaginationBlock,
   fillPaginationIndexes,
+  fillPlatformFilterComponent,
   fillTableRows,
   fillYear,
   fillYearSelectorComponent,
@@ -22,20 +23,22 @@ export function fillFinishedGamesByYearTemplate(
   fromId,
   filter,
   filterValue,
-  pageNumber
+  pageNumber,
+  platformId = null
 ) {
   let sourceId = "finished-games-by-year";
 
   const autoExcludeAbandoned = appData.preferences.shouldAutoExclude();
 
-  const pagination = paginate(
-    sortGamesBy(
-      appData.user.games.finishedByYear(year, autoExcludeAbandoned),
-      filter,
-      filterValue
-    ),
-    { pageNumber, useIndexes: true }
-  );
+  const allGames = appData.user.games.finishedByYear(year, autoExcludeAbandoned);
+  const games = platformId
+    ? allGames.filter((game) => game.platform_id === platformId)
+    : allGames;
+
+  const pagination = paginate(sortGamesBy(games, filter, filterValue), {
+    pageNumber,
+    useIndexes: true,
+  });
 
   const transformations = [
     fillCapitalizedUserName,
@@ -44,6 +47,11 @@ export function fillFinishedGamesByYearTemplate(
     (content) => fillFinishedGamesByYearCountLiteral(content, year),
     (content) => fillYear(content, year),
     (content) => fillYearSelectorComponent(content, sourceId),
+    (content) =>
+      fillPlatformFilterComponent(content, allGames, sourceId, {
+        year,
+        currentPlatformId: platformId,
+      }),
     (content) =>
       fillAbandonedColumn(content, autoExcludeAbandoned, false, sourceId),
     (content) =>
@@ -63,18 +71,20 @@ export function fillFinishedGamesByYearTemplate(
         fromId,
         filter,
         filterValue,
-        year
+        year,
+        platformId
       ),
     (content) =>
       fillDataFields(
         content,
         {
           platformFilter: true,
+          platformIdFilter: true,
           finishedFilter: true,
           abandonedFilter: true,
           gameTimeFilter: true,
         },
-        { from, fromId, filter, filterValue, year }
+        { from, fromId, filter, filterValue, year, platformId }
       ),
   ];
 

@@ -40,6 +40,7 @@ export function fillDataFields(content, fields = {}, values = {}) {
       from: true,
       fromId: true,
       platformId: false, // `id`
+      platformIdFilter: false, // `data-platform-id` on sort headers
       nameFilter: true,
       platformFilter: false,
       currentlyPlayingFilter: false,
@@ -58,6 +59,9 @@ export function fillDataFields(content, fields = {}, values = {}) {
   }
   if (fields.platformId) {
     content = content.replaceAll("{{js-id}}", values.platformId);
+  }
+  if (fields.platformIdFilter) {
+    content = content.replaceAll("{{js-platform-id}}", values.platformId || "");
   }
   if (values.year) {
     content = content.replaceAll("{{js-year}}", values.year);

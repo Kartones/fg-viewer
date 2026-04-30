@@ -61,6 +61,9 @@ export class Router {
 
     up.on("link:finished-games-by-year", (event, element) => {
       const year = parseInt(element.dataset.id) || new Date().getFullYear();
+      const platformId = element.dataset.platformId
+        ? parseInt(element.dataset.platformId)
+        : null;
 
       up.render("section.main-container", {
         fragment: fillFinishedGamesByYearTemplate(
@@ -69,7 +72,8 @@ export class Router {
           parseInt(element.dataset.fromId) || "",
           element.dataset.filter || DEFAULT_FILTER,
           element.dataset.filterValue || "",
-          parseInt(element.dataset.page || 0)
+          parseInt(element.dataset.page || 0),
+          platformId
         ),
         transition: event.transition || "move-left",
         scroll: "main",
@@ -79,6 +83,9 @@ export class Router {
 
     up.on("link:abandoned-games-by-year", (event, element) => {
       const year = parseInt(element.dataset.id) || new Date().getFullYear();
+      const platformId = element.dataset.platformId
+        ? parseInt(element.dataset.platformId)
+        : null;
 
       up.render("section.main-container", {
         fragment: fillAbandonedGamesByYearTemplate(
@@ -87,7 +94,8 @@ export class Router {
           parseInt(element.dataset.fromId) || "",
           element.dataset.filter || DEFAULT_FILTER,
           element.dataset.filterValue || "",
-          parseInt(element.dataset.page || 0)
+          parseInt(element.dataset.page || 0),
+          platformId
         ),
         transition: event.transition || "move-left",
         scroll: "main",
@@ -165,13 +173,18 @@ export class Router {
   }
 
   static renderGameListTemplate(event, element, templateFunction) {
+    const platformId = element.dataset.platformId
+      ? parseInt(element.dataset.platformId)
+      : null;
+
     up.render("section.main-container", {
       fragment: templateFunction(
         element.dataset.from || DEFAULT_SOURCE_ID,
         parseInt(element.dataset.fromId) || "",
         element.dataset.filter || DEFAULT_FILTER,
         element.dataset.filterValue || "",
-        parseInt(element.dataset.page || 0)
+        parseInt(element.dataset.page || 0),
+        platformId
       ),
       transition: event.transition || "move-left",
       scroll: "main",

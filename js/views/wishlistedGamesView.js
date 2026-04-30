@@ -6,6 +6,7 @@ import {
   fillDataFields,
   fillPaginationBlock,
   fillPaginationIndexes,
+  fillPlatformFilterComponent,
   fillSearchComponent,
   fillTableRows,
   fillWishlistedGamesCountLiteral,
@@ -19,14 +20,20 @@ export function fillWishlistedGamesTemplate(
   fromId,
   filter,
   filterValue,
-  pageNumber
+  pageNumber,
+  platformId = null
 ) {
   let sourceId = "wishlisted-games";
 
-  const pagination = paginate(
-    sortGamesBy(appData.user.wishlistedGames.items, filter, filterValue),
-    { pageNumber, useIndexes: true }
-  );
+  const allGames = appData.user.wishlistedGames.items;
+  const games = platformId
+    ? allGames.filter((game) => game.platform_id === platformId)
+    : allGames;
+
+  const pagination = paginate(sortGamesBy(games, filter, filterValue), {
+    pageNumber,
+    useIndexes: true,
+  });
 
   const transformations = [
     fillCapitalizedUserName,
@@ -34,9 +41,14 @@ export function fillWishlistedGamesTemplate(
     fillBackButton,
     (content) => fillSearchComponent(content, sourceId),
     (content) =>
+      fillPlatformFilterComponent(content, allGames, sourceId, {
+        currentPlatformId: platformId,
+      }),
+    (content) =>
       fillPaginationIndexes(content, pagination.indexes, {
         linkDestination: "wishlisted-games",
         from,
+        platformId,
       }),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
@@ -51,15 +63,18 @@ export function fillWishlistedGamesTemplate(
         from,
         fromId,
         filter,
-        filterValue
+        filterValue,
+        null,
+        platformId
       ),
     (content) =>
       fillDataFields(
         content,
         {
           platformFilter: true,
+          platformIdFilter: true,
         },
-        { from, fromId, filter, filterValue }
+        { from, fromId, filter, filterValue, platformId }
       ),
   ];
 

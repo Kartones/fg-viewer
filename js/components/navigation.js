@@ -19,13 +19,15 @@ export function fillPaginationBlock(
   fromId,
   filter,
   filterValue,
-  id = null
+  id = null,
+  platformId = null
 ) {
   if (pagination.total === 1) {
     return content.replace("{{js-pagination}}", "");
   }
 
   const dataId = id ? `data-id="${id}"` : "";
+  const dataPlatformId = platformId ? `data-platform-id="${platformId}"` : "";
 
   return content.replace(
     "{{js-pagination}}",
@@ -34,8 +36,8 @@ export function fillPaginationBlock(
     ${
       pagination.prev !== null
         ? `
-        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="0" href="#">&laquo; first</a>
-        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="${pagination.prev}" href="#">prev</a>
+        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} ${dataPlatformId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="0" href="#">&laquo; first</a>
+        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} ${dataPlatformId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="${pagination.prev}" href="#">prev</a>
         `
         : `<a class="nes-btn is-disabled" href="#">&laquo; first</a><a class="nes-btn is-disabled" href="#">prev</a>`
     }
@@ -48,10 +50,10 @@ export function fillPaginationBlock(
     ${
       pagination.next !== null
         ? `
-        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="${
+        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} ${dataPlatformId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="${
             pagination.next
           }" href="#">next</a>
-        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="${
+        <a class="nes-btn" up-emit="link:${emitUrl}" up-emit-props='{"transition":"cross-fade" }' ${dataId} ${dataPlatformId} data-filter="${filter}" data-filter-value="${filterValue}" data-from="${from}" data-from-id="${fromId}" data-page="${
             pagination.total - 1
           }" href="#">last &raquo;</a>
         `
@@ -88,9 +90,12 @@ export function fillPaginationIndexes(content, indexes, options = {}) {
   const indexesHTML = Object.entries(indexes)
     .map(([index, page]) => {
       if (simpleLinkDestinations.includes(options.linkDestination)) {
+        const platformIdAttr = options.platformId
+          ? ` data-platform-id="${options.platformId}"`
+          : "";
         return `<a up-emit="link:${
           options.linkDestination
-        }" href="#" data-page="${page}">${index === "0" ? "0-9" : index}</a>`;
+        }" href="#" data-page="${page}"${platformIdAttr}>${index === "0" ? "0-9" : index}</a>`;
       } else if (options.linkDestination === "user-games-by-platform") {
         return linkToUserGamesByPlatform(options.platformId, options.from, {
           page,

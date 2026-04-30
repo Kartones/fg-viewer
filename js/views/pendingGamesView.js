@@ -7,6 +7,7 @@ import {
   fillPaginationBlock,
   fillPaginationIndexes,
   fillPendingGamesCountLiteral,
+  fillPlatformFilterComponent,
   fillSearchComponent,
   fillTableRows,
   paginate,
@@ -19,14 +20,20 @@ export function fillPendingGamesTemplate(
   fromId,
   filter,
   filterValue,
-  pageNumber
+  pageNumber,
+  platformId = null
 ) {
   let sourceId = "pending-games";
 
-  const pagination = paginate(
-    sortGamesBy(appData.user.games.pending(), filter, filterValue),
-    { pageNumber, useIndexes: true }
-  );
+  const allGames = appData.user.games.pending();
+  const games = platformId
+    ? allGames.filter((game) => game.platform_id === platformId)
+    : allGames;
+
+  const pagination = paginate(sortGamesBy(games, filter, filterValue), {
+    pageNumber,
+    useIndexes: true,
+  });
 
   const transformations = [
     fillCapitalizedUserName,
@@ -34,9 +41,14 @@ export function fillPendingGamesTemplate(
     fillBackButton,
     (content) => fillSearchComponent(content, sourceId),
     (content) =>
+      fillPlatformFilterComponent(content, allGames, sourceId, {
+        currentPlatformId: platformId,
+      }),
+    (content) =>
       fillPaginationIndexes(content, pagination.indexes, {
         linkDestination: "pending-games",
         from,
+        platformId,
       }),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
@@ -52,16 +64,19 @@ export function fillPendingGamesTemplate(
         from,
         fromId,
         filter,
-        filterValue
+        filterValue,
+        null,
+        platformId
       ),
     (content) =>
       fillDataFields(
         content,
         {
           platformFilter: true,
+          platformIdFilter: true,
           gameTimeFilter: true,
         },
-        { from, fromId, filter, filterValue }
+        { from, fromId, filter, filterValue, platformId }
       ),
   ];
 

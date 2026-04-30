@@ -7,6 +7,7 @@ import {
   fillAbandonedGamesByYearCountLiteral,
   fillPaginationBlock,
   fillPaginationIndexes,
+  fillPlatformFilterComponent,
   fillTableRows,
   fillYear,
   fillYearSelectorComponent,
@@ -21,14 +22,20 @@ export function fillAbandonedGamesByYearTemplate(
   fromId,
   filter,
   filterValue,
-  pageNumber
+  pageNumber,
+  platformId = null
 ) {
   let sourceId = "abandoned-games-by-year";
 
-  const pagination = paginate(
-    sortGamesBy(appData.user.games.abandonedByYear(year), filter, filterValue),
-    { pageNumber, useIndexes: true }
-  );
+  const allGames = appData.user.games.abandonedByYear(year);
+  const games = platformId
+    ? allGames.filter((game) => game.platform_id === platformId)
+    : allGames;
+
+  const pagination = paginate(sortGamesBy(games, filter, filterValue), {
+    pageNumber,
+    useIndexes: true,
+  });
 
   const transformations = [
     fillCapitalizedUserName,
@@ -37,6 +44,11 @@ export function fillAbandonedGamesByYearTemplate(
     (content) => fillAbandonedGamesByYearCountLiteral(content, year),
     (content) => fillYear(content, year),
     (content) => fillYearSelectorComponent(content, sourceId),
+    (content) =>
+      fillPlatformFilterComponent(content, allGames, sourceId, {
+        year,
+        currentPlatformId: platformId,
+      }),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
         gameName: true,
@@ -52,16 +64,18 @@ export function fillAbandonedGamesByYearTemplate(
         fromId,
         filter,
         filterValue,
-        year
+        year,
+        platformId
       ),
     (content) =>
       fillDataFields(
         content,
         {
           platformFilter: true,
+          platformIdFilter: true,
           gameTimeFilter: true,
         },
-        { from, fromId, filter, filterValue, year }
+        { from, fromId, filter, filterValue, year, platformId }
       ),
   ];
 

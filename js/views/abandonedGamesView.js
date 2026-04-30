@@ -7,6 +7,7 @@ import {
   fillDataFields,
   fillPaginationBlock,
   fillPaginationIndexes,
+  fillPlatformFilterComponent,
   fillSearchComponent,
   fillTableRows,
   paginate,
@@ -19,14 +20,20 @@ export function fillAbandonedGamesTemplate(
   fromId,
   filter,
   filterValue,
-  pageNumber
+  pageNumber,
+  platformId = null
 ) {
   let sourceId = "abandoned-games";
 
-  const pagination = paginate(
-    sortGamesBy(appData.user.games.abandoned(), filter, filterValue),
-    { pageNumber, useIndexes: true }
-  );
+  const allGames = appData.user.games.abandoned();
+  const games = platformId
+    ? allGames.filter((game) => game.platform_id === platformId)
+    : allGames;
+
+  const pagination = paginate(sortGamesBy(games, filter, filterValue), {
+    pageNumber,
+    useIndexes: true,
+  });
 
   const operations = [
     fillCapitalizedUserName,
@@ -34,9 +41,14 @@ export function fillAbandonedGamesTemplate(
     fillBackButton,
     (content) => fillSearchComponent(content, sourceId),
     (content) =>
+      fillPlatformFilterComponent(content, allGames, sourceId, {
+        currentPlatformId: platformId,
+      }),
+    (content) =>
       fillPaginationIndexes(content, pagination.indexes, {
         linkDestination: "abandoned-games",
         from,
+        platformId,
       }),
     (content) =>
       fillTableRows(content, pagination.items, sourceId, {
@@ -52,16 +64,19 @@ export function fillAbandonedGamesTemplate(
         from,
         fromId,
         filter,
-        filterValue
+        filterValue,
+        null,
+        platformId
       ),
     (content) =>
       fillDataFields(
         content,
         {
           platformFilter: true,
+          platformIdFilter: true,
           gameTimeFilter: true,
         },
-        { from, fromId, filter, filterValue }
+        { from, fromId, filter, filterValue, platformId }
       ),
   ];
 

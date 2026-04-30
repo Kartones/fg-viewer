@@ -97,6 +97,50 @@ export function fillSearchComponent(content, from, fromId = null) {
   );
 }
 
+export function fillPlatformFilterComponent(
+  content,
+  games,
+  sourceId,
+  options = {}
+) {
+  options = {
+    year: null,
+    currentPlatformId: null,
+    ...options,
+  };
+
+  const platformIds = [...new Set(games.map((game) => game.platform_id))];
+
+  if (platformIds.length <= 1) {
+    return content.replace("{{js-platform-filter}}", "");
+  }
+
+  platformIds.sort((a, b) =>
+    appData.platforms[a].shortname.localeCompare(appData.platforms[b].shortname)
+  );
+
+  const yearAttr = options.year ? ` data-id="${options.year}"` : "";
+
+  const platformLinks = platformIds
+    .map((id) => {
+      const activeClass =
+        id === options.currentPlatformId ? ' class="active-filter"' : "";
+      return `<a up-emit="link:${sourceId}" href="#" data-platform-id="${id}"${yearAttr}${activeClass}>${appData.platforms[id].shortname}</a>`;
+    })
+    .join(" - ");
+
+  const resetLink = options.currentPlatformId
+    ? ` - <a up-emit="link:${sourceId}" href="#"${yearAttr}>Show all</a>`
+    : "";
+
+  const finalHTML = `<details>
+    <summary>Platform filter</summary>
+    <p class="character-filter">${platformLinks}${resetLink}</p>
+    </details>`;
+
+  return content.replace("{{js-platform-filter}}", finalHTML);
+}
+
 export function fillAbandonedColumn(
   content,
   autoExcludeValue,
@@ -123,7 +167,7 @@ export function fillAbandonedColumn(
       ? ""
       : `
   <th>
-  <a up-emit="link:${linkDestination}" up-emit-props='{"transition":"cross-fade" }' data-filter="abandoned" data-filter-value="{{js-abandoned-filter-value}}" ${dataIdAttribute} data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#"><i class="nes-icon skull" title="Abandoned"></i>{{js-abandoned-filter-title-suffix}}</a>
+  <a up-emit="link:${linkDestination}" up-emit-props='{"transition":"cross-fade" }' data-filter="abandoned" data-filter-value="{{js-abandoned-filter-value}}" ${dataIdAttribute} data-platform-id="{{js-platform-id}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#"><i class="nes-icon skull" title="Abandoned"></i>{{js-abandoned-filter-title-suffix}}</a>
   </th>
   `
   );
