@@ -44,16 +44,18 @@ export function fillGameURLs(content, gameId) {
   const game = appData.games[gameId];
   const gameUrls = game.urls || {};
   const urlEncodedName = encodeURIComponent(game.name_for_search);
+  const gamePublishDate = game.publish_date ?? 0;
 
   // Giant Bomb DB now is barebones, so prefer Steam or manually-added website links
-  const urlKeys = Object.keys(gameUrls);
   const hasUrlKey = (key) => Object.keys(gameUrls).some(k => k.toLowerCase() === key.toLowerCase());
   if (hasUrlKey("steam") || hasUrlKey("website")) {
-    const giantBombKey = urlKeys.find(k => k.toLowerCase() === "giant bomb");
+    const giantBombKey = Object.keys(gameUrls).find(k => k.toLowerCase() === "giant bomb");
     if (giantBombKey) {
       delete gameUrls[giantBombKey];
     }
   }
+
+  // Order matters (will be displayed in the order of keys)
 
   gameUrls[
     "HowLongToBeat"
@@ -64,7 +66,7 @@ export function fillGameURLs(content, gameId) {
   ] = `https://beforeiplay.com/index.php?title=Special:Search&profile=default&search=${urlEncodedName}&fulltext=1`;
 
   // Assume IGN guides cover only games since they started the wikis/guides section (2002)
-  if (game.publish_date >= 2002) {
+  if (gamePublishDate >= 2002) {
     gameUrls[
       "IGN"
     ] = `https://duckduckgo.com/?q=${urlEncodedName}+ign+guide`;
@@ -75,16 +77,16 @@ export function fillGameURLs(content, gameId) {
       "PCGamingWiki"
     ] = `https://www.pcgamingwiki.com/w/index.php?search=${urlEncodedName}&title=Special%3ASearch`;
 
-    if (game.publish_date > 1991) {
+    if (gamePublishDate > 1991) {
       gameUrls[
         "ModDB"
       ] = `https://www.moddb.com/search?q=${urlEncodedName}`;
       gameUrls[
-          "Nexus Mods"
-        ] = `https://www.nexusmods.com/games?keyword=${urlEncodedName}&sort=name`;
+        "Nexus Mods"
+      ] = `https://www.nexusmods.com/games?keyword=${urlEncodedName}&sort=name`;
 
-      // WSGF DB only has games with fixes from 1992 onwards, and by 2016, most games already supported 16:9
-      if (game.publish_date < 2016) {
+      // WSGF DB only has games with fixes after 1991, and by 2016, most games already supported 16:9
+      if (gamePublishDate < 2016) {
         gameUrls[
           "WSFG"
         ] = `https://www.wsgf.org/search/node?keys=${urlEncodedName}`;
