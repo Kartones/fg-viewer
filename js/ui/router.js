@@ -1,5 +1,6 @@
 "use strict";
 
+import { exportPendingGamesMarkdown, exportWishlistedGamesMarkdown } from "../exporters.js";
 import {
   fillGameDetailsTemplate,
   fillAbandonedGamesTemplate,
@@ -162,6 +163,16 @@ export class Router {
   }
 
   static setupUtilityRoutes() {
+    up.on("export:pending-games", (event) => {
+      exportPendingGamesMarkdown();
+      event.preventDefault();
+    });
+
+    up.on("export:wishlisted-games", (event) => {
+      exportWishlistedGamesMarkdown();
+      event.preventDefault();
+    });
+
     up.on("link:random-game", (event) => {
       up.render("section.main-container", {
         fragment: fillRandomGameTemplate(),
