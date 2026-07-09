@@ -44,6 +44,10 @@ a.nes-btn, a.nes-btn:visited {
     color: black;
 }
 
+a.nes-btn.is-primary:visited {
+    color: #fff;
+}
+
 .nes-table.is-bordered {
     margin-top: 1rem;
     margin-bottom: 2rem;
