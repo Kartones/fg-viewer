@@ -1,9 +1,12 @@
 import { test, describe, beforeEach, before } from "node:test";
 import { strict as assert } from "node:assert";
-import { paginate, sortGamesBy } from "../js/components.js";
+import { filterGamesBy, paginate, sortGamesBy } from "../js/components.js";
+import { UserGames } from "../js/models/userGames.js";
 
 global.appData = {};
 let items;
+const ids = (games) => games.map((game) => game.game_id);
+const normalized = (games) => new UserGames(games).items;
 
 describe("paging", () => {
   beforeEach(() => {
@@ -234,6 +237,58 @@ describe("sorting", () => {
           game_id: "id4",
           currently_playing: true,
         },
+      ]);
+    });
+  });
+
+  describe("abandoned", () => {
+    const abandonedItems = () =>
+      normalized([
+        { game_id: "id1", year_abandoned: null },
+        { game_id: "id2", year_abandoned: 2023 },
+        { game_id: "id3", year_abandoned: null },
+        { game_id: "id4", year_abandoned: 2020 },
+      ]);
+    test("sorts ascending with abandoned games first, keeping order", () => {
+      const sortedItems = sortGamesBy(abandonedItems(), "abandoned", "ascending");
+
+      assert.deepEqual(ids(sortedItems), ["id2", "id4", "id1", "id3"]);
+    });
+
+    test("sorts descending with non abandoned games first, keeping order", () => {
+      const sortedItems = sortGamesBy(abandonedItems(), "abandoned", "descending");
+
+      assert.deepEqual(ids(sortedItems), ["id1", "id3", "id2", "id4"]);
+    });
+
+    test("old abandoned flag without year_abandoned is not abandoned", () => {
+      const legacyItems = normalized([
+        { game_id: "id1", abandoned: true, year_abandoned: null },
+        { game_id: "id2", year_abandoned: 2021 },
+      ]);
+
+      const sortedItems = sortGamesBy(legacyItems, "abandoned", "ascending");
+
+      assert.deepEqual(ids(sortedItems), ["id2", "id1"]);
+    });
+  });
+
+  describe("filterGamesBy", () => {
+    test("excludes abandoned games based on year_abandoned", () => {
+      const games = normalized([
+        { game_id: "id1", year_abandoned: 2022 },
+        { game_id: "id2", year_abandoned: null },
+        { game_id: "id3", abandoned: true },
+      ]);
+
+      assert.deepEqual(ids(filterGamesBy(games, "abandoned", true)), [
+        "id2",
+        "id3",
+      ]);
+      assert.deepEqual(ids(filterGamesBy(games, "abandoned", false)), [
+        "id1",
+        "id2",
+        "id3",
       ]);
     });
   });

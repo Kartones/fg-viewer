@@ -32,11 +32,11 @@ export class UserGames {
   }
 
   finishedByYear(year, excludeAbandoned = false) {
-    return this.items
-      .filter((game) => game.year_finished === year)
-      .filter((game) =>
-        excludeAbandoned ? game.finished : game.finished || game.abandoned
-      );
+    return this.items.filter(
+      (game) =>
+        (game.finished && game.year_finished === year) ||
+        (!excludeAbandoned && game.year_abandoned === year)
+    );
   }
 
   yearsWithFinishedOrAbandonedGames(kind) {
@@ -46,17 +46,15 @@ export class UserGames {
       );
     }
 
-    const filterFn =
-      kind === "finished" ? (game) => game.finished : (game) => game.abandoned;
+    const years =
+      kind === "finished"
+        ? this.withFinishedYear()
+            .filter((game) => game.finished)
+            .map((game) => game.year_finished)
+        : this.abandoned().map((game) => game.year_abandoned);
 
     // newest first
-    return Array.from(
-      new Set(
-        this.withFinishedYear()
-          .filter(filterFn)
-          .map((game) => game.year_finished)
-      )
-    ).sort((a, b) => b - a);
+    return Array.from(new Set(years)).sort((a, b) => b - a);
   }
 
   pending() {
@@ -78,9 +76,7 @@ export class UserGames {
   }
 
   abandonedByYear(year) {
-    return this.items.filter(
-      (game) => game.year_finished === year && game.abandoned
-    );
+    return this.abandoned().filter((game) => game.year_abandoned === year);
   }
 
   byGame(gameId) {
@@ -111,6 +107,9 @@ export class UserGames {
   }
 
   constructor(gamesList) {
-    this.#items = gamesList;
+    this.#items = gamesList.map((game) => ({
+      ...game,
+      abandoned: game.year_abandoned !== null && game.year_abandoned !== undefined,
+    }));
   }
 }
