@@ -3,7 +3,12 @@
 import { nextStateOf, titleSuffixOf } from "./data.js";
 import { linkToGameDetails } from "./games.js";
 import { linkToUserGamesByPlatform } from "./platforms.js";
-import { formatGameTime } from "./utils.js";
+import { formatGameTime, isGameTimeShown } from "./utils.js";
+
+const GAME_TIME_HEADER_REGEX =
+  /<th>\s*<a [^>]*data-filter="gameTime"[^>]*>.*?<\/a>\s*<\/th>/gs;
+const GAME_TIME_HEADER_PLACEHOLDER = "{{js-game-time-header}}";
+const GAME_TIME_HEADER_MARKUP = "<th>Game Time</th>";
 
 function getGameStatusRow(
   userGame,
@@ -50,6 +55,11 @@ export function fillDataFields(content, fields = {}, values = {}) {
     },
     ...fields,
   };
+
+  if (!isGameTimeShown()) {
+    fields.gameTimeFilter = false;
+    content = content.replace(GAME_TIME_HEADER_REGEX, "");
+  }
 
   if (fields.from) {
     content = content.replaceAll("{{js-from}}", values.from);
@@ -130,6 +140,13 @@ export function fillDataFields(content, fields = {}, values = {}) {
   return content;
 }
 
+export function fillGameTimeHeader(content) {
+  return content.replaceAll(
+    GAME_TIME_HEADER_PLACEHOLDER,
+    isGameTimeShown() ? GAME_TIME_HEADER_MARKUP : ""
+  );
+}
+
 export function fillTableRows(
   content,
   items,
@@ -151,6 +168,7 @@ export function fillTableRows(
     },
     ...columns,
   };
+  columns.gameTime = columns.gameTime && isGameTimeShown();
   options = {
     ...{
       isPlatformsList: false,

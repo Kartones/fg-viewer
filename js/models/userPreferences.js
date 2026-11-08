@@ -2,9 +2,14 @@
 
 export class UserPreferences {
   #show_catalog_header;
+  #show_game_time;
 
   get showCatalogHeader() {
     return this.#show_catalog_header;
+  }
+
+  get showGameTime() {
+    return this.#show_game_time;
   }
 
   shouldAutoExclude() {
@@ -24,5 +29,6 @@ export class UserPreferences {
 
   constructor(userPreferences) {
     this.#show_catalog_header = userPreferences.show_catalog_header;
+    this.#show_game_time = userPreferences.show_game_time ?? true;
   }
 }
