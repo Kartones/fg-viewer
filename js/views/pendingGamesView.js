@@ -4,6 +4,7 @@ import {
   fillBackButton,
   fillCapitalizedUserName,
   fillDataFields,
+  fillGameTimeColumn,
   fillPaginationBlock,
   fillPaginationIndexes,
   fillPendingGamesCountLiteral,
@@ -68,6 +69,7 @@ export function fillPendingGamesTemplate(
         null,
         platformId
       ),
+    (content) => fillGameTimeColumn(content, sourceId),
     (content) =>
       fillDataFields(
         content,

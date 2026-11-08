@@ -5,8 +5,14 @@ import { linkToGameDetails } from "./games.js";
 import { linkToUserGamesByPlatform } from "./platforms.js";
 import { formatGameTime, isGameTimeShown } from "./utils.js";
 
-const GAME_TIME_HEADER_REGEX =
-  /<th>\s*<a [^>]*data-filter="gameTime"[^>]*>.*?<\/a>\s*<\/th>/gs;
+const GAME_TIME_COLUMN_PLACEHOLDER = "{{js-game-time-column}}";
+const BY_YEAR_SUFFIX = "-by-year";
+const BY_PLATFORM_SOURCE_ID = "user-games-by-platform";
+const SOURCES_WITHOUT_PLATFORM_ID = [
+  "user-games",
+  "currently-playing-games",
+  BY_PLATFORM_SOURCE_ID,
+];
 const GAME_TIME_HEADER_PLACEHOLDER = "{{js-game-time-header}}";
 const GAME_TIME_HEADER_MARKUP = "<th>Game Time</th>";
 
@@ -58,7 +64,6 @@ export function fillDataFields(content, fields = {}, values = {}) {
 
   if (!isGameTimeShown()) {
     fields.gameTimeFilter = false;
-    content = content.replace(GAME_TIME_HEADER_REGEX, "");
   }
 
   if (fields.from) {
@@ -138,6 +143,37 @@ export function fillDataFields(content, fields = {}, values = {}) {
   }
 
   return content;
+}
+
+function gameTimeColumnDataAttributes(sourceId) {
+  const attributes = [];
+
+  if (sourceId.endsWith(BY_YEAR_SUFFIX)) {
+    attributes.push('data-id="{{js-year}}"');
+  }
+  if (sourceId === BY_PLATFORM_SOURCE_ID) {
+    attributes.push('data-id="{{js-id}}"');
+  }
+  if (!SOURCES_WITHOUT_PLATFORM_ID.includes(sourceId)) {
+    attributes.push('data-platform-id="{{js-platform-id}}"');
+  }
+
+  return attributes.join(" ");
+}
+
+export function fillGameTimeColumn(content, sourceId) {
+  if (!isGameTimeShown()) {
+    return content.replace(GAME_TIME_COLUMN_PLACEHOLDER, "");
+  }
+
+  return content.replace(
+    GAME_TIME_COLUMN_PLACEHOLDER,
+    `<th>
+  <a up-emit="link:${sourceId}" up-emit-props='{"transition":"cross-fade" }' ${gameTimeColumnDataAttributes(
+      sourceId
+    )} data-filter="gameTime" data-filter-value="{{js-game-time-filter-value}}" data-from="{{js-from}}" data-from-id="{{js-from-id}}" href="#">Game Time{{js-game-time-filter-title-suffix}}</a>
+  </th>`
+  );
 }
 
 export function fillGameTimeHeader(content) {

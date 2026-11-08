@@ -5,6 +5,7 @@ import {
   fillBackButton,
   fillCapitalizedUserName,
   fillDataFields,
+  fillGameTimeColumn,
   fillFinishedGamesByYearCountLiteral,
   fillPaginationBlock,
   fillPaginationIndexes,
@@ -74,6 +75,7 @@ export function fillFinishedGamesByYearTemplate(
         year,
         platformId
       ),
+    (content) => fillGameTimeColumn(content, sourceId),
     (content) =>
       fillDataFields(
         content,

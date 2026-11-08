@@ -2,13 +2,14 @@ import { test, describe, beforeEach, afterEach } from "node:test";
 import { strict as assert } from "node:assert";
 import {
   fillDataFields,
+  fillGameTimeColumn,
   fillGameTimeHeader,
   fillTableRows,
   fillTotalGameTime,
 } from "../js/components.js";
 import { UserPreferences } from "../js/models/userPreferences.js";
 
-const GAME_TIME_HEADER_MARKUP = `<th><a data-filter="gameTime" data-filter-value="{{js-game-time-filter-value}}" href="#">Game Time{{js-game-time-filter-title-suffix}}</a></th>`;
+const GAME_TIME_COLUMN_PLACEHOLDER = "{{js-game-time-column}}";
 const GAME_TIME_CELL_MARKUP = "<td class=\"is-centered\">1.5 hours</td>";
 const TOTAL_GAME_TIME_PLACEHOLDER = "{{js-total-game-time}}";
 const GAME_ID = "game1";
@@ -72,9 +73,9 @@ describe("game time hidden", () => {
     assert.ok(!gameRows({ gameTime: true }).includes("<td class=\"is-centered\">"));
   });
 
-  test("data fields remove the game time header", () => {
+  test("game time column placeholder is emptied", () => {
     const content = fillDataFields(
-      `<tr>${GAME_TIME_HEADER_MARKUP}</tr>`,
+      fillGameTimeColumn(`<tr>${GAME_TIME_COLUMN_PLACEHOLDER}</tr>`, "user-games"),
       { gameTimeFilter: true },
       { filter: null, filterValue: null }
     );
@@ -97,9 +98,9 @@ describe("game time shown", () => {
     assert.ok(gameRows({ gameTime: true }).includes(GAME_TIME_CELL_MARKUP));
   });
 
-  test("data fields keep and fill the game time header", () => {
+  test("game time column placeholder renders and fills the header", () => {
     const content = fillDataFields(
-      `<tr>${GAME_TIME_HEADER_MARKUP}</tr>`,
+      fillGameTimeColumn(`<tr>${GAME_TIME_COLUMN_PLACEHOLDER}</tr>`, "user-games"),
       { gameTimeFilter: true },
       { filter: null, filterValue: null }
     );
