@@ -7,6 +7,7 @@ import {
   fillCapitalizedUserName,
   fillCurrentlyPlayingGamesCountLiteral,
   fillDataFields,
+  fillGameTimeColumn,
   fillFinishedGamesCountLiteral,
   fillGamesByPlatformCompletedPercent,
   fillGamesByPlatformCountLiteral,
@@ -95,6 +96,7 @@ export function fillUserGamesByPlatformTemplate(
         filterValue,
         platformId
       ),
+    (content) => fillGameTimeColumn(content, sourceId),
     (content) =>
       fillDataFields(
         content,

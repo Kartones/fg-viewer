@@ -5,6 +5,7 @@ import {
   fillCapitalizedUserName,
   fillCurrentlyPlayingGamesCountLiteral,
   fillDataFields,
+  fillGameTimeColumn,
   fillPaginationBlock,
   fillPaginationIndexes,
   fillSearchComponent,
@@ -55,6 +56,7 @@ export function fillCurrentlyPlayingGamesTemplate(
         filter,
         filterValue
       ),
+    (content) => fillGameTimeColumn(content, sourceId),
     (content) =>
       fillDataFields(
         content,

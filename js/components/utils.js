@@ -4,6 +4,10 @@ export function fillYear(content, year) {
   return content.replaceAll("{{js-year}}", year);
 }
 
+export function isGameTimeShown() {
+  return appData.preferences?.showGameTime !== false;
+}
+
 export function pluralize(literal, target) {
   let value = 0;
   if ("items" in target) {

@@ -4,6 +4,7 @@ import {
   fillBackButton,
   fillGameDLCBlock,
   fillGameName,
+  fillGameTimeHeader,
   fillGamePublishDate,
   fillGameURLs,
   fillTableRows,
@@ -64,6 +65,7 @@ export function fillGameDetailsTemplate(gameId, from, fromId) {
         }
       ),
     (content) => fillGameName(content, gameId),
+    fillGameTimeHeader,
     (content) => fillGameDLCBlock(content, gameId, sourceId),
     (content) => fillBackButton(content, from, fromId),
     (content) => fillGamePublishDate(content, gameId),
